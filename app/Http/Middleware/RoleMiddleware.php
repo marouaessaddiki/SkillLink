@@ -14,9 +14,11 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
-        if (!auth()->user()->hasRole($role)) {
-            abort(403, 'Unauthorized');
-        }
+        dd([
+            'user' => auth()->user()->email,
+            'role_received' => $role,
+            'user_roles' => auth()->user()->roles->pluck('name')->toArray(),
+        ]);
 
         return $next($request);
     }
