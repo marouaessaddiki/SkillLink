@@ -11,6 +11,8 @@ class Application extends Model
         'freelance_id',
         'cover_letter',
         'status',
+        'proposed_price',
+        'status',
     ];
 
     public function mission()

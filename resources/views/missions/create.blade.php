@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,25 +23,26 @@
                 Publish your mission and find the right freelancer.
             </p>
 
+            {{-- Validation errors --}}
             @if($errors->any())
                 <div class="bg-red-100 text-red-700 px-4 py-3 rounded-lg mb-6">
-
                     <ul class="list-disc list-inside">
                         @foreach($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-
                 </div>
             @endif
 
             <form method="POST" action="{{ route('missions.store') }}">
-
                 @csrf
 
+                {{-- Title --}}
                 <div class="mb-5">
-                    <label for="title"
-                           class="block font-medium text-gray-700 mb-2">
+                    <label
+                        for="title"
+                        class="block font-medium text-gray-700 mb-2"
+                    >
                         Mission Title
                     </label>
 
@@ -55,9 +57,40 @@
                     >
                 </div>
 
+                {{-- Category --}}
                 <div class="mb-5">
-                    <label for="description"
-                           class="block font-medium text-gray-700 mb-2">
+                    <label
+                        for="category_id"
+                        class="block font-medium text-gray-700 mb-2"
+                    >
+                        Category
+                    </label>
+
+                    <select
+                        id="category_id"
+                        name="category_id"
+                        required
+                        class="w-full border-gray-300 rounded-lg shadow-sm"
+                    >
+                        <option value="">Select a category</option>
+
+                        @foreach($categories as $category)
+                            <option
+                                value="{{ $category->id }}"
+                                {{ old('category_id') == $category->id ? 'selected' : '' }}
+                            >
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
+                {{-- Description --}}
+                <div class="mb-5">
+                    <label
+                        for="description"
+                        class="block font-medium text-gray-700 mb-2"
+                    >
                         Description
                     </label>
 
@@ -71,11 +104,14 @@
                     >{{ old('description') }}</textarea>
                 </div>
 
+                {{-- Budget + Deadline --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
 
                     <div>
-                        <label for="budget"
-                               class="block font-medium text-gray-700 mb-2">
+                        <label
+                            for="budget"
+                            class="block font-medium text-gray-700 mb-2"
+                        >
                             Budget
                         </label>
 
@@ -93,8 +129,10 @@
                     </div>
 
                     <div>
-                        <label for="deadline"
-                               class="block font-medium text-gray-700 mb-2">
+                        <label
+                            for="deadline"
+                            class="block font-medium text-gray-700 mb-2"
+                        >
                             Deadline
                         </label>
 
@@ -110,62 +148,77 @@
 
                 </div>
 
-                <div class="mb-6 mt-5">
+                {{-- Status --}}
+<div class="mb-6 mt-5">
 
-                    <label for="status"
-                           class="block font-medium text-gray-700 mb-2">
-                        Status
-                    </label>
+    <label
+        for="status"
+        class="block font-medium text-gray-700 mb-2"
+    >
+        Status
+    </label>
 
-                    <select
-                        id="status"
-                        name="status"
-                        class="w-full border-gray-300 rounded-lg shadow-sm">
+    <select
+        id="status"
+        name="status"
+        class="w-full border-gray-300 rounded-lg shadow-sm"
+    >
 
-                        <option value="open"
-                            {{ old('status', 'open') == 'open' ? 'selected' : '' }}>
-                            Open
-                        </option>
+        <option
+            value="open"
+            {{ old('status', 'open') == 'open' ? 'selected' : '' }}
+        >
+            Open
+        </option>
 
-                        <option value="in_progress"
-                            {{ old('status') == 'in_progress' ? 'selected' : '' }}>
-                            In Progress
-                        </option>
+        <option
+            value="in_progress"
+            {{ old('status') == 'in_progress' ? 'selected' : '' }}
+        >
+            In Progress
+        </option>
 
-                        <option value="completed"
-                            {{ old('status') == 'completed' ? 'selected' : '' }}>
-                            Completed
-                        </option>
+        <option
+            value="completed"
+            {{ old('status') == 'completed' ? 'selected' : '' }}
+        >
+            Completed
+        </option>
 
-                        <option value="cancelled"
-                            {{ old('status') == 'cancelled' ? 'selected' : '' }}>
-                            Cancelled
-                        </option>
+        <option
+            value="cancelled"
+            {{ old('status') == 'cancelled' ? 'selected' : '' }}
+        >
+            Cancelled
+        </option>
 
-                    </select>
+    </select>
 
-                </div>
+</div>
 
-                <div class="flex justify-between items-center">
+{{-- Buttons --}}
+<div class="flex justify-between items-center mt-6">
 
-                    <a href="{{ route('missions.index') }}"
-                       class="text-gray-600 hover:text-gray-800">
-                        ← Back
-                    </a>
+    <a
+        href="{{ route('missions.index') }}"
+        class="text-gray-600 hover:text-gray-800"
+    >
+        ← Back
+    </a>
 
-                    <button
-                        type="submit"
-                        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700">
-                        Create Mission
-                    </button>
+    <button
+        type="submit"
+        class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700"
+    >
+        Create Mission
+    </button>
 
-                </div>
+</div>
 
-            </form>
+</form>
 
-        </div>
-
-    </div>
+</div>
+</div>
 
 </body>
 </html>

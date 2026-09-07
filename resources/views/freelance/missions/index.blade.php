@@ -1,46 +1,181 @@
-<x-app-layout>
+<!DOCTYPE html>
+<html lang="en">
 
-    <div class="max-w-7xl mx-auto py-10 px-6">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <h1 class="text-3xl font-bold text-gray-800 mb-8">
-            Available Missions
-        </h1>
+    <title>Available Missions - SkillLink</title>
 
-        @if(session('success'))
-            <div class="bg-green-100 text-green-700 p-4 rounded-lg mb-6">
-                {{ session('success') }}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+
+    <div class="max-w-6xl mx-auto py-10 px-6">
+
+        {{-- Header --}}
+        <div class="mb-8">
+
+            <h1 class="text-3xl font-bold text-gray-800">
+                Available Missions
+            </h1>
+
+            <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">
+        Search & Filter Missions 🔎
+    </h2>
+
+    <form method="GET" action="{{ route('freelance.missions.index') }}">
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+            <div>
+                <label class="block font-medium text-gray-700 mb-2">
+                    Search
+                </label>
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Search mission..."
+                    class="w-full border-gray-300 rounded-lg shadow-sm"
+                >
             </div>
-        @endif
 
-        @if($missions->isEmpty())
+            <div>
+                <label class="block font-medium text-gray-700 mb-2">
+                    Category
+                </label>
 
-            <div class="bg-white p-8 rounded-xl shadow text-center">
-                <p class="text-gray-500">
-                    No missions available at the moment.
-                </p>
+                <select
+                    name="category_id"
+                    class="w-full border-gray-300 rounded-lg shadow-sm"
+                >
+                    <option value="">All Categories</option>
+
+                    @foreach($categories as $category)
+
+                        <option
+                            value="{{ $category->id }}"
+                            {{ request('category_id') == $category->id ? 'selected' : '' }}
+                        >
+                            {{ $category->name }}
+                        </option>
+
+                    @endforeach
+
+                </select>
             </div>
 
-        @else
+            <div>
+                <label class="block font-medium text-gray-700 mb-2">
+                    Min Budget
+                </label>
 
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <input
+                    type="number"
+                    name="min_budget"
+                    min="0"
+                    step="0.01"
+                    value="{{ request('min_budget') }}"
+                    placeholder="Min"
+                    class="w-full border-gray-300 rounded-lg shadow-sm"
+                >
+            </div>
+
+            <div>
+                <label class="block font-medium text-gray-700 mb-2">
+                    Max Budget
+                </label>
+
+                <input
+                    type="number"
+                    name="max_budget"
+                    min="0"
+                    step="0.01"
+                    value="{{ request('max_budget') }}"
+                    placeholder="Max"
+                    class="w-full border-gray-300 rounded-lg shadow-sm"
+                >
+            </div>
+
+        </div>
+
+        <div class="flex gap-3 mt-5">
+
+            <button
+                type="submit"
+                class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
+            >
+                Search
+            </button>
+
+            <a
+                href="{{ route('freelance.missions.index') }}"
+                class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-300"
+            >
+                Reset
+            </a>
+
+        </div>
+
+    </form>
+
+</div>
+
+            <p class="text-gray-600 mt-1">
+                Find a mission and apply as a freelancer.
+            </p>
+
+        </div>
+
+        {{-- Missions --}}
+        @if($missions->count() > 0)
+
+            <div class="grid gap-6">
 
                 @foreach($missions as $mission)
 
-                    <div class="bg-white rounded-xl shadow-md p-6">
+                    <div class="bg-white rounded-xl shadow p-6">
 
-                        <h2 class="text-xl font-bold text-gray-800 mb-3">
-                            {{ $mission->title }}
-                        </h2>
+                        {{-- Title + Status --}}
+                        <div class="flex justify-between items-start">
 
-                        <p class="text-gray-600 mb-4">
+                            <div>
+
+                                <h2 class="text-xl font-bold text-gray-800">
+                                    {{ $mission->title }}
+                                </h2>
+
+                                {{-- Category --}}
+                                @if($mission->category)
+                                    <p class="text-sm text-blue-600 font-medium mt-2">
+                                        Category: {{ $mission->category->name }}
+                                    </p>
+                                @endif
+
+                            </div>
+
+                            <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                                Open
+                            </span>
+
+                        </div>
+
+                        {{-- Description --}}
+                        <p class="text-gray-600 mt-4">
                             {{ $mission->description }}
                         </p>
 
-                        <div class="space-y-2 text-sm mb-5">
+                        {{-- Budget + Deadline --}}
+                        <div class="mt-5 flex gap-6 text-sm text-gray-600">
 
                             <p>
                                 <strong>Budget:</strong>
-                                {{ $mission->budget }} DH
+                                {{ $mission->budget }}
                             </p>
 
                             <p>
@@ -48,49 +183,94 @@
                                 {{ $mission->deadline }}
                             </p>
 
-                            <p>
-                                <strong>Status:</strong>
-                                <span class="text-green-600 font-semibold">
-                                    {{ ucfirst($mission->status) }}
-                                </span>
-                            </p>
-
                         </div>
 
-                     @if(in_array($mission->id, $appliedMissionIds))
+                        {{-- Apply --}}
+                       
+                     <div class="mt-5">
 
-    <div class="bg-gray-100 text-gray-600 px-4 py-3 rounded-lg">
-        You already applied to this mission.
-    </div>
-
-@else
-
-    <form method="POST"
-          action="{{ route('freelance.missions.apply', $mission) }}">
-
+    <form
+        action="{{ route('freelance.missions.apply', $mission) }}"
+        method="POST"
+        class="bg-gray-50 border rounded-lg p-5"
+    >
         @csrf
 
-        <textarea
-            name="cover_letter"
-            rows="4"
-            placeholder="Write your cover letter..."
-            class="w-full border-gray-300 rounded-lg mb-3"
-        ></textarea>
+        <h3 class="text-lg font-semibold text-gray-800 mb-4">
+            Submit your offer
+        </h3>
+
+        {{-- Proposed Price --}}
+        <div class="mb-4">
+
+            <label
+                for="proposed_price_{{ $mission->id }}"
+                class="block font-medium text-gray-700 mb-2"
+            >
+                Proposed Price
+            </label>
+
+            <input
+                type="number"
+                step="0.01"
+                min="0"
+                id="proposed_price_{{ $mission->id }}"
+                name="proposed_price"
+                required
+                class="w-full border-gray-300 rounded-lg shadow-sm"
+                placeholder="Example: 450"
+            >
+
+        </div>
+
+        {{-- Cover Letter --}}
+        <div class="mb-4">
+
+            <label
+                for="cover_letter_{{ $mission->id }}"
+                class="block font-medium text-gray-700 mb-2"
+            >
+                Cover Letter
+            </label>
+
+            <textarea
+                id="cover_letter_{{ $mission->id }}"
+                name="cover_letter"
+                rows="4"
+                required
+                class="w-full border-gray-300 rounded-lg shadow-sm"
+                placeholder="Explain why you are the right freelancer for this mission..."
+            ></textarea>
+
+        </div>
 
         <button
             type="submit"
-            class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700"
+            class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700"
         >
-            Apply Now
+            Submit Application
         </button>
 
     </form>
 
-@endif   
-
+</div>
                     </div>
 
                 @endforeach
+
+            </div>
+
+        @else
+
+            <div class="bg-white rounded-xl shadow p-10 text-center">
+
+                <h2 class="text-xl font-semibold text-gray-700">
+                    No missions available
+                </h2>
+
+                <p class="text-gray-500 mt-2">
+                    There are currently no open missions.
+                </p>
 
             </div>
 
@@ -98,4 +278,6 @@
 
     </div>
 
-</x-app-layout>
+</body>
+
+</html>

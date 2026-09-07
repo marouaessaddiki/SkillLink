@@ -46,13 +46,20 @@
                         <div class="flex justify-between items-start">
 
                             <div>
-                                <h2 class="text-xl font-bold text-gray-800">
-                                    {{ $mission->title }}
-                                </h2>
+                                   
+                                 <h2 class="text-xl font-bold text-gray-800">
+    {{ $mission->title }}
+</h2>
 
-                                <p class="text-gray-600 mt-2">
-                                    {{ $mission->description }}
-                                </p>
+@if($mission->category)
+    <p class="text-sm text-blue-600 font-medium mt-2">
+        Category: {{ $mission->category->name }}
+    </p>
+@endif
+
+<p class="text-gray-600 mt-2">
+    {{ $mission->description }}
+</p>
                             </div>
 
                             <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">

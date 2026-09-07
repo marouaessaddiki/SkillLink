@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Application;
+use App\Notifications\ApplicationAcceptedNotification;
+
 
 class ClientApplicationController extends Controller
 {
@@ -41,6 +43,10 @@ class ClientApplicationController extends Controller
     $application->mission->update([
         'status' => 'in_progress',
     ]);
+    // Send notification to the freelancer
+$application->freelance->notify(
+    new ApplicationAcceptedNotification($application)
+);
 
     return back()->with(
         'success',

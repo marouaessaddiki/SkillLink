@@ -26,6 +26,7 @@ class ApplicationController extends Controller
             'mission_id' => $mission->id,
             'freelance_id' => auth()->id(),
             'cover_letter' => $request->cover_letter,
+            'proposed_price' => $request->proposed_price,
             'status' => 'pending',
         ]);
 

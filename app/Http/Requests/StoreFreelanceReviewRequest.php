@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreApplicationRequest extends FormRequest
+class StoreFreelanceReviewRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -14,8 +14,8 @@ class StoreApplicationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cover_letter' => ['required', 'string', 'max:2000'],
-            'proposed_price' => ['required', 'numeric', 'min:0'],
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+            'comment' => ['nullable', 'string', 'max:2000'],
         ];
     }
 }

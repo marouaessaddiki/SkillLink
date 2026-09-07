@@ -14,6 +14,7 @@ class StoreMissionRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'category_id' => ['required', 'exists:categories,id'],
             'title' => ['required', 'string', 'max:255'],
             'description' => ['required', 'string'],
             'budget' => ['required', 'numeric', 'min:0'],

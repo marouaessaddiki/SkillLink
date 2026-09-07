@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreMissionRequest;
 use App\Models\Mission;
 use Illuminate\Http\Request;
+use App\Models\Category;
 
 class MissionController extends Controller
 {
@@ -23,24 +24,27 @@ class MissionController extends Controller
     /**
      * Show the form for creating a new mission.
      */
-    public function create()
-    {
-        return view('missions.create');
-    }
+  public function create()
+{
+    $categories = Category::orderBy('name')->get();
+
+    return view('missions.create', compact('categories'));
+}
 
     /**
      * Store a newly created mission.
      */
     public function store(StoreMissionRequest $request)
     {
-        Mission::create([
-            'client_id' => auth()->id(),
-            'title' => $request->title,
-            'description' => $request->description,
-            'budget' => $request->budget,
-            'deadline' => $request->deadline,
-            'status' => $request->status ?? 'open',
-        ]);
+       Mission::create([
+    'client_id' => auth()->id(),
+    'category_id' => $request->category_id,
+    'title' => $request->title,
+    'description' => $request->description,
+    'budget' => $request->budget,
+    'deadline' => $request->deadline,
+    'status' => $request->status ?? 'open',
+]);
 
         return redirect()
             ->route('missions.index')

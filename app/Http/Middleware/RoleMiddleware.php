@@ -8,17 +8,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, string $role): Response
+    public function handle(Request $request, Closure $next, ...$roles): Response
     {
         if (!auth()->check()) {
             return redirect()->route('login');
         }
 
-        dd([
-            'user' => auth()->user()->email,
-            'role_received' => $role,
-            'user_roles' => auth()->user()->roles->pluck('name')->toArray(),
-        ]);
+        if (!auth()->user()->hasRole($roles)) {
+            abort(403, 'User does not have the required role.');
+        }
 
         return $next($request);
     }
