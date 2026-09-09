@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
-
+use App\Models\Role;
 class RegisteredUserController extends Controller
 {
     /**
@@ -55,7 +55,9 @@ class RegisteredUserController extends Controller
     ]);
 
     // Give the user his selected role
-    $user->addRole($request->role);
+    $role = Role::where('name', $request->role)->firstOrFail();
+
+$user->addRole($role);
 
     event(new Registered($user));
 

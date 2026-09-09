@@ -42,7 +42,7 @@ if ($user->hasRole('freelance')) {
     return redirect()->route('freelance.dashboard');
 }
 
-abort(403, 'User has no valid role.');
+return redirect()->route('dashboard');
     }
 
     /**

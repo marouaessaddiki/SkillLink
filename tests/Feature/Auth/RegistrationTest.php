@@ -15,17 +15,31 @@ class RegistrationTest extends TestCase
 
         $response->assertStatus(200);
     }
+  public function test_new_users_can_register(): void
+{
+    $response = $this->post('/register', [
+        'name' => 'Test User',
+        'email' => 'test@example.com',
+        'password' => 'password',
+        'password_confirmation' => 'password',
+        'role' => 'client',
+    ]);
 
-    public function test_new_users_can_register(): void
-    {
-        $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-            'password' => 'password',
-            'password_confirmation' => 'password',
-        ]);
+    $this->assertDatabaseHas('users', [
+        'email' => 'test@example.com',
+    ]);
 
-        $this->assertAuthenticated();
-        $response->assertRedirect(route('dashboard', absolute: false));
-    }
+    dd([
+        'user' => \App\Models\User::where('email', 'test@example.com')->first(),
+        'auth_check' => auth()->check(),
+        'auth_id' => auth()->id(),
+        'default_guard' => config('auth.defaults.guard'),
+        'guards' => config('auth.guards'),
+    ]);
+
+    $this->assertAuthenticated();
+
+    $response->assertRedirect(route('client.dashboard', absolute: false));
+}
+    
 }

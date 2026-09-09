@@ -17,6 +17,20 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+   Route::get('/dashboard', function () {
+    $user = auth()->user();
+
+    if ($user->hasRole('admin')) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    if ($user->hasRole('freelance')) {
+        return redirect()->route('freelance.dashboard');
+    }
+
+    return redirect()->route('client.dashboard');
+})->name('dashboard');
+
     // Dashboard Client
     Route::get('/client/dashboard', [DashboardController::class, 'client'])
         ->middleware('role:client')
