@@ -89,8 +89,45 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
+              {{-- Notifications --}}
+@if(auth()->user()->hasRole('freelance'))
+    <x-dropdown align="right" width="80">
+        <x-slot name="trigger">
+            <button
+                class="relative inline-flex items-center px-3 py-2 text-gray-600 hover:text-gray-800"
+            >
+                🔔
+
+                @if(auth()->user()->unreadNotifications->count() > 0)
+                    <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
+                        {{ auth()->user()->unreadNotifications->count() }}
+                    </span>
+                @endif
+            </button>
+        </x-slot>
+
+        <x-slot name="content">
+            @forelse(auth()->user()->unreadNotifications as $notification)
+                <form method="POST"
+                      action="{{ route('notifications.read', $notification->id) }}">
+                    @csrf
+
+                    <button type="submit"
+                            class="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
+                        {{ $notification->data['message'] }}
+                    </button>
+                </form>
+            @empty
+                <div class="px-4 py-3 text-sm text-gray-500">
+                    No new notifications.
+                </div>
+            @endforelse
+        </x-slot>
+    </x-dropdown>
+@endif
 
                 <x-dropdown align="right" width="48">
+                    
 
                     <x-slot name="trigger">
 

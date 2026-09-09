@@ -75,4 +75,13 @@ Route::post('/freelance/missions/{mission}/apply', [ApplicationController::class
         ->name('admin.dashboard');
 });
 
+Route::post('/notifications/{notification}/read', function ($notification) {
+    $notification = auth()->user()->notifications()
+        ->where('id', $notification)
+        ->firstOrFail();
+
+    $notification->markAsRead();
+
+    return back();
+})->middleware('auth')->name('notifications.read');
 require __DIR__.'/auth.php';
