@@ -7,6 +7,9 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ClientApplicationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminMissionController;
+use App\Http\Controllers\AdminCategoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -63,6 +66,37 @@ Route::post('/freelance/missions/{mission}/apply', [ApplicationController::class
     [ReviewController::class, 'reviewClient'])
     ->middleware('role:freelance')
     ->name('freelance.missions.review-client');
+
+    Route::get('/admin/users', [AdminUserController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.users.index');
+    Route::get('/admin/missions', [AdminMissionController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.missions.index');
+    Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.users.destroy');
+    Route::get('/admin/categories', [AdminCategoryController::class, 'index'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.index');
+    Route::get('/admin/categories/create', [AdminCategoryController::class, 'create'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.create');
+
+Route::post('/admin/categories', [AdminCategoryController::class, 'store'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.store');
+    Route::get('/admin/categories/{category}/edit', [AdminCategoryController::class, 'edit'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.edit');
+
+Route::put('/admin/categories/{category}', [AdminCategoryController::class, 'update'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.update');
+
+Route::delete('/admin/categories/{category}', [AdminCategoryController::class, 'destroy'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.categories.destroy');
 
     // Dashboard Freelance
     Route::get('/freelance/dashboard', [DashboardController::class, 'freelance'])
