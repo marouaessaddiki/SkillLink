@@ -98,22 +98,35 @@
 
 
             {{-- Admin Actions --}}
-            <div class="mt-8 bg-white rounded-xl shadow p-6">
+<div class="mt-8 bg-white rounded-xl shadow p-6">
 
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                    Administration
-                </h2>
+    <h2 class="text-xl font-semibold text-gray-800 mb-4">
+        Administration
+    </h2>
 
-                <div class="flex flex-wrap gap-4">
+    <div class="flex flex-wrap gap-4">
 
-                    <a href="{{ route('missions.index') }}"
-                       class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
-                        View Missions
-                    </a>
+        {{-- Manage Users --}}
+        <a href="{{ route('admin.users.index') }}"
+           class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
+            Manage Users
+        </a>
 
-                </div>
+        {{-- Manage Missions --}}
+        <a href="{{ route('admin.missions.index') }}"
+           class="bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700">
+            Manage Missions
+        </a>
 
-            </div>
+        {{-- Manage Categories --}}
+        <a href="{{ route('admin.categories.index') }}"
+           class="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700">
+            Manage Categories
+        </a>
+
+    </div>
+
+</div>
 
         </main>
 

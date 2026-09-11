@@ -10,12 +10,23 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminMissionController;
 use App\Http\Controllers\AdminCategoryController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', function () {
     return view('welcome');
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
+
+// Profile
+Route::get('/profile', [ProfileController::class, 'edit'])
+    ->name('profile.edit');
+
+Route::patch('/profile', [ProfileController::class, 'update'])
+    ->name('profile.update');
+
+Route::delete('/profile', [ProfileController::class, 'destroy'])
+    ->name('profile.destroy');
 
    Route::get('/dashboard', function () {
     $user = auth()->user();

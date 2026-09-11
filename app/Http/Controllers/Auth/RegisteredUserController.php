@@ -28,7 +28,7 @@ class RegisteredUserController extends Controller
      *
      * @throws ValidationException
      */
-   public function store(Request $request): RedirectResponse
+     public function store(Request $request): RedirectResponse
 {
     $request->validate([
         'name' => ['required', 'string', 'max:255'],
@@ -38,12 +38,12 @@ class RegisteredUserController extends Controller
             'lowercase',
             'email',
             'max:255',
-            'unique:' . User::class
+            'unique:' . User::class,
         ],
         'password' => [
             'required',
             'confirmed',
-            Rules\Password::defaults()
+            Rules\Password::defaults(),
         ],
         'role' => ['required', 'in:client,freelance'],
     ]);
@@ -57,20 +57,20 @@ class RegisteredUserController extends Controller
     // Give the user his selected role
     $role = Role::where('name', $request->role)->firstOrFail();
 
-$user->addRole($role);
+    $user->addRole($role);
 
     event(new Registered($user));
 
-  Auth::login($user);
+    Auth::guard('web')->login($user);
 
-if ($user->hasRole('client')) {
-    return redirect()->route('client.dashboard');
-}
+    if ($user->hasRole('client')) {
+        return redirect()->route('client.dashboard');
+    }
 
-if ($user->hasRole('freelance')) {
-    return redirect()->route('freelance.dashboard');
-}
+    if ($user->hasRole('freelance')) {
+        return redirect()->route('freelance.dashboard');
+    }
 
-abort(403, 'User has no valid role.');
+    abort(403, 'User has no valid role.');
 }
 }

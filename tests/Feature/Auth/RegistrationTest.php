@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Auth;
 
+use App\Models\Role;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -15,31 +16,30 @@ class RegistrationTest extends TestCase
 
         $response->assertStatus(200);
     }
-  public function test_new_users_can_register(): void
-{
-    $response = $this->post('/register', [
-        'name' => 'Test User',
-        'email' => 'test@example.com',
-        'password' => 'password',
-        'password_confirmation' => 'password',
-        'role' => 'client',
-    ]);
 
-    $this->assertDatabaseHas('users', [
-        'email' => 'test@example.com',
-    ]);
+    public function test_new_users_can_register(): void
+    {
+        // Create the role needed for registration
+        Role::create([
+            'name' => 'client',
+        ]);
 
-    dd([
-        'user' => \App\Models\User::where('email', 'test@example.com')->first(),
-        'auth_check' => auth()->check(),
-        'auth_id' => auth()->id(),
-        'default_guard' => config('auth.defaults.guard'),
-        'guards' => config('auth.guards'),
-    ]);
+        $response = $this->post('/register', [
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'password' => 'password',
+            'password_confirmation' => 'password',
+            'role' => 'client',
+        ]);
 
-    $this->assertAuthenticated();
+        $response->assertRedirect(
+            route('client.dashboard', absolute: false)
+        );
 
-    $response->assertRedirect(route('client.dashboard', absolute: false));
-}
-    
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('users', [
+            'email' => 'test@example.com',
+        ]);
+    }
 }

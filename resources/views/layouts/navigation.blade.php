@@ -27,107 +27,159 @@
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
 
-    {{-- Dashboard --}}
-    <x-nav-link
-        :href="auth()->user()->hasRole('admin')
-            ? route('admin.dashboard')
-            : (auth()->user()->hasRole('client')
-                ? route('client.dashboard')
-                : route('freelance.dashboard'))"
-        :active="request()->routeIs(
-            'admin.dashboard',
-            'client.dashboard',
-            'freelance.dashboard'
-        )"
-    >
-        {{ __('Dashboard') }}
-    </x-nav-link>
+                    {{-- Dashboard --}}
+                    <x-nav-link
+                        :href="auth()->user()->hasRole('admin')
+                            ? route('admin.dashboard')
+                            : (auth()->user()->hasRole('client')
+                                ? route('client.dashboard')
+                                : route('freelance.dashboard'))"
+
+                        :active="request()->routeIs(
+                            'admin.dashboard',
+                            'client.dashboard',
+                            'freelance.dashboard'
+                        )"
+                    >
+                        {{ __('Dashboard') }}
+                    </x-nav-link>
 
 
-    {{-- Client Navigation --}}
-    @if(auth()->user()->hasRole('client'))
+                    {{-- ================= ADMIN ================= --}}
+                    @if(auth()->user()->hasRole('admin'))
 
-        <x-nav-link
-            :href="route('missions.index')"
-            :active="request()->routeIs('missions.*')"
-        >
-            {{ __('My Missions') }}
-        </x-nav-link>
+                        <x-nav-link
+                            :href="route('admin.users.index')"
+                            :active="request()->routeIs('admin.users.*')"
+                        >
+                            {{ __('Users') }}
+                        </x-nav-link>
 
-        <x-nav-link
-            :href="route('client.applications.index')"
-            :active="request()->routeIs('client.applications.*')"
-        >
-            {{ __('Applications') }}
-        </x-nav-link>
+                        <x-nav-link
+                            :href="route('admin.missions.index')"
+                            :active="request()->routeIs('admin.missions.*')"
+                        >
+                            {{ __('Missions') }}
+                        </x-nav-link>
 
-    @endif
+                        <x-nav-link
+                            :href="route('admin.categories.index')"
+                            :active="request()->routeIs('admin.categories.*')"
+                        >
+                            {{ __('Categories') }}
+                        </x-nav-link>
 
 
-    {{-- Freelance Navigation --}}
-    @if(auth()->user()->hasRole('freelance'))
+                    {{-- ================= CLIENT ================= --}}
+                    @elseif(auth()->user()->hasRole('client'))
 
-        <x-nav-link
-            :href="route('freelance.missions.index')"
-            :active="request()->routeIs('freelance.missions.index')"
-        >
-            {{ __('Missions') }}
-        </x-nav-link>
+                        <x-nav-link
+                            :href="route('missions.index')"
+                            :active="request()->routeIs('missions.*')"
+                        >
+                            {{ __('My Missions') }}
+                        </x-nav-link>
 
-        <x-nav-link
-            :href="route('freelance.applications.index')"
-            :active="request()->routeIs('freelance.applications.*')"
-        >
-            {{ __('My Applications') }}
-        </x-nav-link>
+                        <x-nav-link
+                            :href="route('client.applications.index')"
+                            :active="request()->routeIs('client.applications.*')"
+                        >
+                            {{ __('Applications') }}
+                        </x-nav-link>
 
-    @endif
 
-</div>
+                    {{-- ================= FREELANCE ================= --}}
+                    @elseif(auth()->user()->hasRole('freelance'))
+
+                        <x-nav-link
+                            :href="route('freelance.missions.index')"
+                            :active="request()->routeIs('freelance.missions.*')"
+                        >
+                            {{ __('Missions') }}
+                        </x-nav-link>
+
+                        <x-nav-link
+                            :href="route('freelance.applications.index')"
+                            :active="request()->routeIs('freelance.applications.*')"
+                        >
+                            {{ __('My Applications') }}
+                        </x-nav-link>
+
+                    @endif
+
+                </div>
 
             </div>
 
+
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-              {{-- Notifications --}}
-@if(auth()->user()->hasRole('freelance'))
-    <x-dropdown align="right" width="80">
-        <x-slot name="trigger">
-            <button
-                class="relative inline-flex items-center px-3 py-2 text-gray-600 hover:text-gray-800"
-            >
-                🔔
 
-                @if(auth()->user()->unreadNotifications->count() > 0)
-                    <span class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5">
-                        {{ auth()->user()->unreadNotifications->count() }}
-                    </span>
+                {{-- Notifications - Freelance only --}}
+                @if(auth()->user()->hasRole('freelance'))
+
+                    <x-dropdown align="right" width="80">
+
+                        <x-slot name="trigger">
+
+                            <button
+                                class="relative inline-flex items-center px-3 py-2 text-gray-600 hover:text-gray-800"
+                            >
+
+                                🔔
+
+                                @if(auth()->user()->unreadNotifications->count() > 0)
+
+                                    <span
+                                        class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5"
+                                    >
+                                        {{ auth()->user()->unreadNotifications->count() }}
+                                    </span>
+
+                                @endif
+
+                            </button>
+
+                        </x-slot>
+
+
+                        <x-slot name="content">
+
+                            @forelse(auth()->user()->unreadNotifications as $notification)
+
+                                <form
+                                    method="POST"
+                                    action="{{ route('notifications.read', $notification->id) }}"
+                                >
+
+                                    @csrf
+
+                                    <button
+                                        type="submit"
+                                        class="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100"
+                                    >
+                                        {{ $notification->data['message'] }}
+                                    </button>
+
+                                </form>
+
+                            @empty
+
+                                <div class="px-4 py-3 text-sm text-gray-500">
+                                    No new notifications.
+                                </div>
+
+                            @endforelse
+
+                        </x-slot>
+
+                    </x-dropdown>
+
                 @endif
-            </button>
-        </x-slot>
 
-        <x-slot name="content">
-            @forelse(auth()->user()->unreadNotifications as $notification)
-                <form method="POST"
-                      action="{{ route('notifications.read', $notification->id) }}">
-                    @csrf
 
-                    <button type="submit"
-                            class="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100">
-                        {{ $notification->data['message'] }}
-                    </button>
-                </form>
-            @empty
-                <div class="px-4 py-3 text-sm text-gray-500">
-                    No new notifications.
-                </div>
-            @endforelse
-        </x-slot>
-    </x-dropdown>
-@endif
-
+                <!-- User Dropdown -->
                 <x-dropdown align="right" width="48">
-                    
 
                     <x-slot name="trigger">
 
@@ -135,7 +187,9 @@
                             class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150"
                         >
 
-                            <div>{{ Auth::user()->name }}</div>
+                            <div>
+                                {{ Auth::user()->name }}
+                            </div>
 
                             <div class="ms-1">
 
@@ -159,9 +213,16 @@
 
                     </x-slot>
 
+
                     <x-slot name="content">
 
-                     
+                        <!-- Profile -->
+                        <x-dropdown-link
+                            :href="route('profile.edit')"
+                        >
+                            {{ __('Profile') }}
+                        </x-dropdown-link>
+
 
                         <!-- Authentication -->
                         <form method="POST" action="{{ route('logout') }}">
@@ -183,6 +244,7 @@
                 </x-dropdown>
 
             </div>
+
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
@@ -227,6 +289,7 @@
 
     </div>
 
+
     <!-- Responsive Navigation Menu -->
     <div
         :class="{'block': open, 'hidden': ! open}"
@@ -235,6 +298,7 @@
 
         <div class="pt-2 pb-3 space-y-1">
 
+            {{-- Dashboard --}}
             <x-responsive-nav-link
                 :href="auth()->user()->hasRole('admin')
                     ? route('admin.dashboard')
@@ -251,7 +315,71 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
+
+            {{-- Admin Responsive Navigation --}}
+            @if(auth()->user()->hasRole('admin'))
+
+                <x-responsive-nav-link
+                    :href="route('admin.users.index')"
+                    :active="request()->routeIs('admin.users.*')"
+                >
+                    {{ __('Users') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link
+                    :href="route('admin.missions.index')"
+                    :active="request()->routeIs('admin.missions.*')"
+                >
+                    {{ __('Missions') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link
+                    :href="route('admin.categories.index')"
+                    :active="request()->routeIs('admin.categories.*')"
+                >
+                    {{ __('Categories') }}
+                </x-responsive-nav-link>
+
+
+            {{-- Client Responsive Navigation --}}
+            @elseif(auth()->user()->hasRole('client'))
+
+                <x-responsive-nav-link
+                    :href="route('missions.index')"
+                    :active="request()->routeIs('missions.*')"
+                >
+                    {{ __('My Missions') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link
+                    :href="route('client.applications.index')"
+                    :active="request()->routeIs('client.applications.*')"
+                >
+                    {{ __('Applications') }}
+                </x-responsive-nav-link>
+
+
+            {{-- Freelance Responsive Navigation --}}
+            @elseif(auth()->user()->hasRole('freelance'))
+
+                <x-responsive-nav-link
+                    :href="route('freelance.missions.index')"
+                    :active="request()->routeIs('freelance.missions.*')"
+                >
+                    {{ __('Missions') }}
+                </x-responsive-nav-link>
+
+                <x-responsive-nav-link
+                    :href="route('freelance.applications.index')"
+                    :active="request()->routeIs('freelance.applications.*')"
+                >
+                    {{ __('My Applications') }}
+                </x-responsive-nav-link>
+
+            @endif
+
         </div>
+
 
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
@@ -268,9 +396,16 @@
 
             </div>
 
+
             <div class="mt-3 space-y-1">
 
-             
+                <!-- Profile -->
+                <x-responsive-nav-link
+                    :href="route('profile.edit')"
+                >
+                    {{ __('Profile') }}
+                </x-responsive-nav-link>
+
 
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}">

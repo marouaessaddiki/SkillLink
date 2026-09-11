@@ -19,15 +19,15 @@ class DashboardController extends Controller
             'total' => Mission::where('client_id', $user->id)->count(),
 
             'open' => Mission::where('client_id', $user->id)
-                ->where('status', 'Ouverte')
+                ->where('status', 'open')
                 ->count(),
 
             'in_progress' => Mission::where('client_id', $user->id)
-                ->where('status', 'En cours')
+                ->where('status', 'in_progress')
                 ->count(),
 
             'completed' => Mission::where('client_id', $user->id)
-                ->where('status', 'Terminée')
+                ->where('status', 'completed')
                 ->count(),
 
             'applications' => Application::whereHas('mission', function ($query) use ($user) {
@@ -40,47 +40,55 @@ class DashboardController extends Controller
 
 
     /**
-     * Dashboard Freelance
-     */
-    public function freelance()
-    {
-        $user = auth()->user();
+ * Dashboard Freelance
+ */
+public function freelance()
+{
+    $user = auth()->user();
 
-        $stats = [
-            // جميع missions المفتوحة
-            'missions' => Mission::where('status', 'Ouverte')->count(),
+    $stats = [
+        
+        'missions' => Mission::where('status', 'open')->count(),
 
-            // عدد العروض التي أرسلها freelance
-            'applications' => Application::where(
-                'freelance_id',
-                $user->id
-            )->count(),
+        //applications
+        'applications' => Application::where(
+            'freelance_id',
+            $user->id
+        )->count(),
 
-            // العروض المقبولة
-            'accepted' => Application::where('freelance_id', $user->id)
-                ->where('status', 'accepted')
-                ->count(),
+        // Applications
+        'accepted' => Application::where(
+            'freelance_id',
+            $user->id
+        )
+            ->where('status', 'accepted')
+            ->count(),
 
-            // missions en cours
-            'in_progress' => Application::where('freelance_id', $user->id)
-                ->where('status', 'accepted')
-                ->whereHas('mission', function ($query) {
-                    $query->where('status', 'En cours');
-                })
-                ->count(),
+        // Missions en cours
+        'in_progress' => Application::where(
+            'freelance_id',
+            $user->id
+        )
+            ->where('status', 'accepted')
+            ->whereHas('mission', function ($query) {
+                $query->where('status', 'in_progress');
+            })
+            ->count(),
 
-            // missions terminées
-            'completed' => Application::where('freelance_id', $user->id)
-                ->where('status', 'accepted')
-                ->whereHas('mission', function ($query) {
-                    $query->where('status', 'Terminée');
-                })
-                ->count(),
-        ];
+        // Missions terminées
+        'completed' => Application::where(
+            'freelance_id',
+            $user->id
+        )
+            ->where('status', 'accepted')
+            ->whereHas('mission', function ($query) {
+                $query->where('status', 'completed');
+            })
+            ->count(),
+    ];
 
-        return view('freelance.dashboard', compact('stats'));
-    }
-
+    return view('freelance.dashboard', compact('stats'));
+}
 
     /**
      * Dashboard Admin
@@ -100,7 +108,7 @@ class DashboardController extends Controller
 
             'missions' => Mission::count(),
 
-            'completed' => Mission::where('status', 'Terminée')->count(),
+            'completed' => Mission::where('status', 'completed')->count(),
         ];
 
         return view('admin.dashboard', compact('stats'));
