@@ -1,128 +1,30 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<x-app-layout>
+    <div class="min-h-[calc(100vh-65px)] bg-[var(--paper)]">
+        <div class="mx-auto grid max-w-[1440px] lg:grid-cols-[230px_1fr]">
+            <aside class="hidden border-r border-[var(--line)] bg-white px-4 py-7 lg:block">
+                <p class="px-3 text-[10px] font-bold uppercase tracking-[.2em] text-[var(--muted)]">Workspace</p>
+                <nav class="mt-4 space-y-1">
+                    <a href="{{ route('freelance.dashboard') }}" class="flex items-center gap-3 rounded-xl bg-blue-50 px-3 py-3 text-sm font-bold text-[var(--blue)]">⌂ <span>Dashboard</span></a>
+                    <a href="{{ route('freelance.missions.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--muted)] hover:bg-slate-50">⌕ <span>Discover Missions</span></a>
+                    <a href="{{ route('freelance.applications.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--muted)] hover:bg-slate-50">↗ <span>My Applications</span></a>
+                    <a href="{{ route('freelance.applications.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--muted)] hover:bg-slate-50">◷ <span>Active Missions</span></a>
+                    <a href="{{ route('freelance.applications.index') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--muted)] hover:bg-slate-50">✓ <span>Completed Missions</span></a>
+                    <a href="#notifications" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--muted)] hover:bg-slate-50">♢ <span>Notifications</span></a>
+                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-semibold text-[var(--muted)] hover:bg-slate-50">◉ <span>My Profile</span></a>
+                </nav>
+                <div class="mt-12 rounded-2xl bg-[var(--ink)] p-4 text-white"><p class="text-xs font-bold text-[var(--mint)]">Your next opportunity</p><p class="mt-2 text-sm leading-6 text-slate-200">Keep your profile sharp and let the right mission find you.</p><a href="{{ route('profile.edit') }}" class="mt-4 inline-block text-xs font-bold text-white underline underline-offset-4">Update profile →</a></div>
+            </aside>
 
-    <title>Freelance Dashboard</title>
+            <main class="min-w-0 px-5 py-7 sm:px-8 lg:px-10 lg:py-10">
+                <div class="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p class="sl-kicker">Freelancer workspace</p><h1 class="mt-2 text-3xl font-bold tracking-tight text-[var(--ink)] sm:text-4xl">Good morning, {{ auth()->user()->name }} <span aria-hidden="true">👋</span></h1><p class="mt-2 text-[var(--muted)]">Ready to find your next mission?</p></div><div class="flex gap-3"><a href="{{ route('freelance.missions.index') }}" class="sl-button-primary">Discover missions <span>→</span></a><a href="{{ route('freelance.applications.index') }}" class="hidden sl-button-secondary sm:inline-flex">My applications</a></div></div>
+                <section class="relative mt-8 overflow-hidden rounded-3xl bg-[var(--ink)] p-6 text-white sm:p-8"><div class="absolute -right-10 -top-20 h-64 w-64 rounded-full border-[32px] border-blue-400/20"></div><div class="relative max-w-xl"><p class="text-xs font-bold uppercase tracking-[.2em] text-[var(--mint)]">Your skill network</p><h2 class="mt-3 text-2xl font-bold sm:text-3xl">The right mission is closer than you think.</h2><p class="mt-3 max-w-lg text-sm leading-6 text-slate-300">Explore fresh opportunities, make thoughtful offers and build a track record clients trust.</p><div class="mt-6 flex items-center gap-2 text-xs font-bold text-slate-200"><span class="h-2 w-2 rounded-full bg-[var(--mint)]"></span>{{ $stats['missions'] }} open missions waiting to be discovered</div></div></section>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
+                <section class="mt-7 grid gap-4 sm:grid-cols-2 xl:grid-cols-4"><div class="sl-panel p-5"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Available missions</p><p class="mt-3 text-3xl font-bold text-[var(--blue)]">{{ $stats['missions'] }}</p><p class="mt-1 text-xs text-[var(--muted)]">Open right now</p></div><div class="sl-panel p-5"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Applications sent</p><p class="mt-3 text-3xl font-bold text-[var(--violet)]">{{ $stats['applications'] }}</p><p class="mt-1 text-xs text-[var(--muted)]">Across all missions</p></div><div class="sl-panel p-5"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Active missions</p><p class="mt-3 text-3xl font-bold text-amber-600">{{ $stats['in_progress'] }}</p><p class="mt-1 text-xs text-[var(--muted)]">Work in progress</p></div><div class="sl-panel p-5"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Completed</p><p class="mt-3 text-3xl font-bold text-emerald-600">{{ $stats['completed'] }}</p><p class="mt-1 text-xs text-[var(--muted)]">Missions delivered</p></div></section>
 
-<body class="bg-gray-100">
+                <div class="mt-8 grid gap-7 xl:grid-cols-[1.35fr_.8fr]"><section><div class="mb-4 flex items-center justify-between"><div><p class="sl-kicker">Curated for you</p><h2 class="mt-1 text-2xl font-bold text-[var(--ink)]">Recommended missions</h2></div><a href="{{ route('freelance.missions.index') }}" class="text-sm font-bold text-[var(--blue)]">See all →</a></div><div class="space-y-4">@forelse($recommendedMissions as $mission)<article class="sl-panel p-5 transition hover:-translate-y-0.5 hover:border-blue-200 sm:p-6"><div class="flex items-start justify-between gap-4"><div><span class="text-xs font-bold uppercase tracking-wider text-[var(--blue)]">{{ $mission->category?->name ?? 'Open category' }}</span><h3 class="mt-2 text-lg font-bold text-[var(--ink)]">{{ $mission->title }}</h3></div><span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">Open</span></div><p class="mt-2 line-clamp-2 text-sm leading-6 text-[var(--muted)]">{{ $mission->description }}</p><div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[var(--line)] pt-4 text-sm text-[var(--muted)]"><span><strong class="text-[var(--ink)]">{{ $mission->budget }}</strong> budget</span><span>Due {{ $mission->deadline }}</span><a href="{{ route('freelance.missions.show', $mission) }}" class="ml-auto font-bold text-[var(--blue)]">View mission →</a></div></article>@empty<div class="sl-panel p-10 text-center"><p class="text-lg font-bold text-[var(--ink)]">No missions available yet.</p><p class="mt-2 text-sm text-[var(--muted)]">Your next opportunity could be one click away.</p><a href="{{ route('freelance.missions.index') }}" class="sl-button-primary mt-5">Browse missions</a></div>@endforelse</div></section>
 
-    <div class="min-h-screen">
-
-        {{-- Header --}}
-        <header class="bg-white shadow">
-            <div class="max-w-7xl mx-auto px-6 py-5">
-
-                <h1 class="text-3xl font-bold text-gray-800">
-                    Freelance Dashboard
-                </h1>
-
-                <p class="mt-1 text-gray-600">
-                    Welcome {{ auth()->user()->name }} 👋
-                </p>
-
-            </div>
-        </header>
-
-
-        {{-- Content --}}
-        <main class="max-w-7xl mx-auto px-6 py-8">
-
-            {{-- Statistics --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
-
-                {{-- Available Missions --}}
-                <div class="bg-white rounded-xl shadow p-6">
-                    <p class="text-gray-500 text-sm">
-                        Available Missions
-                    </p>
-
-                    <p class="text-3xl font-bold text-blue-600 mt-2">
-                        {{ $stats['missions'] }}
-                    </p>
-                </div>
-
-
-                {{-- My Applications --}}
-                <div class="bg-white rounded-xl shadow p-6">
-                    <p class="text-gray-500 text-sm">
-                        My Applications
-                    </p>
-
-                    <p class="text-3xl font-bold text-purple-600 mt-2">
-                        {{ $stats['applications'] }}
-                    </p>
-                </div>
-
-
-                {{-- Accepted --}}
-                <div class="bg-white rounded-xl shadow p-6">
-                    <p class="text-gray-500 text-sm">
-                        Accepted
-                    </p>
-
-                    <p class="text-3xl font-bold text-green-600 mt-2">
-                        {{ $stats['accepted'] }}
-                    </p>
-                </div>
-
-
-                {{-- In Progress --}}
-                <div class="bg-white rounded-xl shadow p-6">
-                    <p class="text-gray-500 text-sm">
-                        In Progress
-                    </p>
-
-                    <p class="text-3xl font-bold text-yellow-600 mt-2">
-                        {{ $stats['in_progress'] }}
-                    </p>
-                </div>
-
-
-                {{-- Completed --}}
-                <div class="bg-white rounded-xl shadow p-6">
-                    <p class="text-gray-500 text-sm">
-                        Completed
-                    </p>
-
-                    <p class="text-3xl font-bold text-gray-700 mt-2">
-                        {{ $stats['completed'] }}
-                    </p>
-                </div>
-
-            </div>
-
-
-            {{-- Quick Actions --}}
-            <div class="mt-8 bg-white rounded-xl shadow p-6">
-
-                <h2 class="text-xl font-semibold text-gray-800 mb-4">
-                    Quick Actions
-                </h2>
-
-                <div class="flex flex-wrap gap-4">
-
-                    <a href="{{ route('freelance.missions.index') }}"
-                       class="bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700">
-                        Browse Missions
-                    </a>
-
-                    <a href="{{ route('freelance.applications.index') }}"
-                       class="bg-purple-600 text-white px-5 py-2 rounded-lg hover:bg-purple-700">
-                        My Applications
-                    </a>
-
-                </div>
-
-            </div>
-
-        </main>
-
+                    <aside class="space-y-7"><section class="sl-panel p-6"><div class="flex items-center justify-between"><h2 class="text-lg font-bold text-[var(--ink)]">Applications to watch</h2><span class="rounded-full bg-amber-50 px-2.5 py-1 text-xs font-bold text-amber-700">{{ $pendingApplications->count() }} pending</span></div><div class="mt-4 divide-y divide-[var(--line)]">@forelse($pendingApplications as $application)<a href="{{ route('freelance.applications.index') }}" class="block py-4 first:pt-0 last:pb-0"><p class="font-semibold text-[var(--ink)]">{{ $application->mission->title }}</p><p class="mt-1 text-xs text-[var(--muted)]">Offer {{ $application->proposed_price }} · Awaiting client response</p></a>@empty<p class="py-5 text-sm text-[var(--muted)]">No pending applications. Time to find a new opportunity.</p>@endforelse</div></section><section class="sl-panel p-6"><div class="flex items-center justify-between"><h2 class="text-lg font-bold text-[var(--ink)]">Active missions</h2><span class="text-xs font-bold text-amber-600">{{ $activeMissions->count() }} active</span></div><div class="mt-4 space-y-4">@forelse($activeMissions as $application)<div class="rounded-2xl bg-slate-50 p-4"><div class="flex items-center justify-between gap-3"><p class="font-semibold text-[var(--ink)]">{{ $application->mission->title }}</p><span class="h-2 w-2 rounded-full bg-amber-500"></span></div><p class="mt-1 text-xs text-[var(--muted)]">{{ $application->mission->client->name ?? 'Client' }} · Due {{ $application->mission->deadline }}</p><div class="mt-3 h-1.5 rounded-full bg-slate-200"><div class="h-1.5 w-2/3 rounded-full bg-[var(--blue)]"></div></div><p class="mt-2 text-[10px] font-bold uppercase tracking-wider text-[var(--muted)]">In progress</p></div>@empty<p class="py-5 text-sm text-[var(--muted)]">Accepted missions will appear here.</p>@endforelse</div></section></aside></div>
+            </main>
+        </div>
     </div>
-
-</body>
-</html>
+</x-app-layout>

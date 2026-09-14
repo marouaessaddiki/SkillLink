@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Application;
 use App\Notifications\ApplicationAcceptedNotification;
+use App\Notifications\PlatformNotification;
 
 
 class ClientApplicationController extends Controller
@@ -64,6 +65,12 @@ $application->freelance->notify(
         $application->update([
             'status' => 'rejected',
         ]);
+
+        $application->freelance->notify(new PlatformNotification(
+            'Your application was rejected.',
+            $application->mission_id,
+            $application->id,
+        ));
 
         return back()->with(
             'success',

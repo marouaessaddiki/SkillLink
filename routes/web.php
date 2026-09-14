@@ -11,6 +11,8 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AdminMissionController;
 use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Application;
+use App\Models\Mission;
 
 Route::get('/', function () {
     return view('welcome');
@@ -55,6 +57,9 @@ Route::delete('/profile', [ProfileController::class, 'destroy'])
     Route::get('/freelance/missions', [FreelanceMissionController::class, 'index'])
         ->middleware('role:freelance')
         ->name('freelance.missions.index');
+    Route::get('/freelance/missions/{mission}', [FreelanceMissionController::class, 'show'])
+        ->middleware('role:freelance')
+        ->name('freelance.missions.show');
 Route::post('/freelance/missions/{mission}/apply', [ApplicationController::class, 'store'])
     ->middleware('role:freelance')
     ->name('freelance.missions.apply');
@@ -64,6 +69,15 @@ Route::post('/freelance/missions/{mission}/apply', [ApplicationController::class
         [ApplicationController::class, 'myApplications'])
         ->middleware('role:freelance')
         ->name('freelance.applications.index');
+        Route::get('/freelance/applications/{application}/edit', [ApplicationController::class, 'edit'])
+        ->middleware('role:freelance')
+        ->name('freelance.applications.edit');
+        Route::put('/freelance/applications/{application}', [ApplicationController::class, 'update'])
+        ->middleware('role:freelance')
+        ->name('freelance.applications.update');
+        Route::delete('/freelance/applications/{application}', [ApplicationController::class, 'destroy'])
+        ->middleware('role:freelance')
+        ->name('freelance.applications.destroy');
         Route::post('/freelance/missions/{mission}/complete',
     [FreelanceMissionController::class, 'complete'])
     ->middleware('role:freelance')
@@ -98,6 +112,9 @@ Route::post('/freelance/missions/{mission}/apply', [ApplicationController::class
     Route::get('/admin/missions', [AdminMissionController::class, 'index'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.missions.index');
+    Route::delete('/admin/missions/{mission}', [AdminMissionController::class, 'destroy'])
+    ->middleware(['auth', 'role:admin'])
+    ->name('admin.missions.destroy');
     Route::delete('/admin/users/{user}', [AdminUserController::class, 'destroy'])
     ->middleware(['auth', 'role:admin'])
     ->name('admin.users.destroy');
@@ -123,6 +140,17 @@ Route::delete('/admin/categories/{category}', [AdminCategoryController::class, '
     ->middleware(['auth', 'role:admin'])
     ->name('admin.categories.destroy');
 
+    Route::get('/admin/applications', function () {
+        $applications = Application::with(['mission.client', 'freelance'])->latest()->get();
+        return view('admin.applications.index', compact('applications'));
+    })->middleware(['auth', 'role:admin'])->name('admin.applications.index');
+
+    Route::get('/admin/activity', function () {
+        $missions = Mission::with('client')->latest()->take(8)->get();
+        $applications = Application::with(['mission', 'freelance'])->latest()->take(8)->get();
+        return view('admin.activity.index', compact('missions', 'applications'));
+    })->middleware(['auth', 'role:admin'])->name('admin.activity.index');
+
     // Dashboard Freelance
     Route::get('/freelance/dashboard', [DashboardController::class, 'freelance'])
         ->middleware('role:freelance')
@@ -132,6 +160,13 @@ Route::delete('/admin/categories/{category}', [AdminCategoryController::class, '
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
         ->middleware('role:admin')
         ->name('admin.dashboard');
+
+    Route::get('/workspace/notifications', function () {
+        $notifications = auth()->user()->notifications()->latest()->get();
+        $role = auth()->user()->hasRole('freelance') ? 'freelance' : 'client';
+
+        return view('workspace.notifications', compact('notifications', 'role'));
+    })->name('workspace.notifications');
 });
 
 Route::post('/notifications/{notification}/read', function ($notification) {

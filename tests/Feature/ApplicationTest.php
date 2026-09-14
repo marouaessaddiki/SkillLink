@@ -60,6 +60,8 @@ class ApplicationTest extends TestCase
             'proposed_price' => 900,
             'status' => 'pending',
         ]);
+
+        $this->assertNotNull(Application::where('mission_id', $mission->id)->first()->date_submission);
     }
     public function test_client_can_accept_an_application(): void
 {
@@ -165,5 +167,46 @@ public function test_freelance_can_complete_an_in_progress_mission(): void
         'id' => $mission->id,
         'status' => 'completed',
     ]);
+}
+
+public function test_freelance_can_update_and_delete_own_pending_application(): void
+{
+    $clientRole = Role::create(['name' => 'client', 'display_name' => 'Client']);
+    $freelanceRole = Role::create(['name' => 'freelance', 'display_name' => 'Freelance']);
+    $client = User::factory()->create();
+    $client->addRole($clientRole);
+    $freelance = User::factory()->create();
+    $freelance->addRole($freelanceRole);
+    $category = Category::create(['name' => 'Design']);
+    $mission = Mission::create([
+        'client_id' => $client->id,
+        'category_id' => $category->id,
+        'title' => 'Design mission',
+        'description' => 'Test description',
+        'budget' => 1000,
+        'deadline' => now()->addDays(7),
+        'status' => 'open',
+    ]);
+    $application = Application::create([
+        'mission_id' => $mission->id,
+        'freelance_id' => $freelance->id,
+        'cover_letter' => 'Original offer',
+        'proposed_price' => 900,
+        'status' => 'pending',
+    ]);
+
+    $this->actingAs($freelance)->put("/freelance/applications/{$application->id}", [
+        'cover_letter' => 'Updated offer',
+        'proposed_price' => 850,
+    ])->assertRedirect('/freelance/applications');
+
+    $this->assertDatabaseHas('applications', [
+        'id' => $application->id,
+        'cover_letter' => 'Updated offer',
+        'proposed_price' => 850,
+    ]);
+
+    $this->actingAs($freelance)->delete("/freelance/applications/{$application->id}");
+    $this->assertDatabaseMissing('applications', ['id' => $application->id]);
 }
 }

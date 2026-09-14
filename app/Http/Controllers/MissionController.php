@@ -14,7 +14,9 @@ class MissionController extends Controller
      */
     public function index()
     {
-        $missions = Mission::where('client_id', auth()->id())
+        $missions = Mission::with('category')
+            ->withCount('applications')
+            ->where('client_id', auth()->id())
             ->latest()
             ->get();
 
@@ -36,15 +38,11 @@ class MissionController extends Controller
      */
     public function store(StoreMissionRequest $request)
     {
-       Mission::create([
-    'client_id' => auth()->id(),
-    'category_id' => $request->category_id,
-    'title' => $request->title,
-    'description' => $request->description,
-    'budget' => $request->budget,
-    'deadline' => $request->deadline,
-    'status' => $request->status ?? 'open',
-]);
+        Mission::create([
+            ...$request->validated(),
+            'client_id' => auth()->id(),
+            'status' => 'open',
+        ]);
 
         return redirect()
             ->route('missions.index')
@@ -58,6 +56,8 @@ class MissionController extends Controller
     {
         abort_if($mission->client_id !== auth()->id(), 403);
 
+        $mission->load(['category', 'applications.freelance'])->loadCount('applications');
+
         return view('missions.show', compact('mission'));
     }
 
@@ -68,7 +68,9 @@ class MissionController extends Controller
     {
         abort_if($mission->client_id !== auth()->id(), 403);
 
-        return view('missions.edit', compact('mission'));
+        $categories = Category::orderBy('name')->get();
+
+        return view('missions.edit', compact('mission', 'categories'));
     }
 
     /**
@@ -79,11 +81,11 @@ class MissionController extends Controller
         abort_if($mission->client_id !== auth()->id(), 403);
 
         $mission->update([
+            'category_id' => $request->category_id,
             'title' => $request->title,
             'description' => $request->description,
             'budget' => $request->budget,
             'deadline' => $request->deadline,
-            'status' => $request->status ?? $mission->status,
         ]);
 
         return redirect()

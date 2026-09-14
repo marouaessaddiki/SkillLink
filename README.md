@@ -21,6 +21,45 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
+## SkillLink setup
+
+SkillLink is a Laravel Blade platform connecting clients and freelancers. The functional domain follows the MCD entities `USER`, `OFFER`, `MISSION`, `CATEGORY`, `REVIEW`, and `NOTIFICATION`.
+
+### Local development
+
+```bash
+composer install
+copy .env.example .env
+php artisan key:generate
+php artisan migrate
+npm install
+npm run dev
+```
+
+For MySQL, configure `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` in `.env` before running migrations.
+
+### Docker
+
+```bash
+copy .env.docker.example .env
+docker compose up -d --build
+```
+
+Open `http://localhost:8000`. Docker starts PHP-FPM, Nginx, MySQL, and the queue worker. The application container runs migrations after MySQL becomes healthy. Full deployment instructions are in [docs/deployment.md](docs/deployment.md).
+
+### Tests and CI
+
+```bash
+php artisan test
+npm run build
+```
+
+GitHub Actions is configured in `.github/workflows/ci.yml` to run tests, build frontend assets, validate Docker Compose, and build the application image. Pushes to `main` also publish a tagged image to GitHub Container Registry for cloud deployment.
+
+### Figma prototype
+
+The route-based Figma prototype specification is in [docs/figma-prototype.md](docs/figma-prototype.md). A real Figma URL requires a Figma workspace supplied by the project owner.
+
 ## Learning Laravel
 
 Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.

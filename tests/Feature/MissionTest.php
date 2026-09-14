@@ -78,4 +78,26 @@ $client->addRole($role);
 
     $response->assertForbidden();
 }
+
+    public function test_new_mission_always_starts_open(): void
+    {
+        $role = Role::create(['name' => 'client', 'display_name' => 'Client']);
+        $client = User::factory()->create();
+        $client->addRole($role);
+        $category = Category::create(['name' => 'Design']);
+
+        $this->actingAs($client)->post('/missions', [
+            'title' => 'Logo mission',
+            'description' => 'Create a logo',
+            'category_id' => $category->id,
+            'budget' => 500,
+            'deadline' => now()->addDays(7)->format('Y-m-d'),
+            'status' => 'completed',
+        ]);
+
+        $this->assertDatabaseHas('missions', [
+            'title' => 'Logo mission',
+            'status' => 'open',
+        ]);
+    }
 }

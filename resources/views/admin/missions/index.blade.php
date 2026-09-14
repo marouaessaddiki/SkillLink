@@ -1,10 +1,4 @@
-<x-app-layout>
-
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Missions Management') }}
-        </h2>
-    </x-slot>
+<x-admin-shell title="Missions">
 
     <div class="py-6">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -42,6 +36,10 @@
                             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
                                 Deadline
                             </th>
+
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                                Actions
+                            </th>
                         </tr>
                     </thead>
 
@@ -77,12 +75,23 @@
                                 <td class="px-6 py-4">
                                     {{ $mission->deadline }}
                                 </td>
+
+                                <td class="px-6 py-4">
+                                    <form method="POST" action="{{ route('admin.missions.destroy', $mission) }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-800"
+                                                onclick="return confirm('Delete this mission?')">
+                                            Delete
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
 
                         @empty
 
                             <tr>
-                                <td colspan="7" class="px-6 py-4 text-center text-gray-500">
+                                <td colspan="8" class="px-6 py-4 text-center text-gray-500">
                                     No missions found.
                                 </td>
                             </tr>
@@ -98,4 +107,4 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-admin-shell>

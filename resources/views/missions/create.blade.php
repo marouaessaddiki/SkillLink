@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Mission - SkillLink</title>
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-
-<body class="bg-gray-100 min-h-screen">
+<x-workspace-shell role="client" title="Create mission" eyebrow="Client workspace">
 
     <div class="max-w-3xl mx-auto py-10 px-6">
 
@@ -148,54 +137,6 @@
 
                 </div>
 
-                {{-- Status --}}
-<div class="mb-6 mt-5">
-
-    <label
-        for="status"
-        class="block font-medium text-gray-700 mb-2"
-    >
-        Status
-    </label>
-
-    <select
-        id="status"
-        name="status"
-        class="w-full border-gray-300 rounded-lg shadow-sm"
-    >
-
-        <option
-            value="open"
-            {{ old('status', 'open') == 'open' ? 'selected' : '' }}
-        >
-            Open
-        </option>
-
-        <option
-            value="in_progress"
-            {{ old('status') == 'in_progress' ? 'selected' : '' }}
-        >
-            In Progress
-        </option>
-
-        <option
-            value="completed"
-            {{ old('status') == 'completed' ? 'selected' : '' }}
-        >
-            Completed
-        </option>
-
-        <option
-            value="cancelled"
-            {{ old('status') == 'cancelled' ? 'selected' : '' }}
-        >
-            Cancelled
-        </option>
-
-    </select>
-
-</div>
-
 {{-- Buttons --}}
 <div class="flex justify-between items-center mt-6">
 
@@ -220,5 +161,4 @@
 </div>
 </div>
 
-</body>
-</html>
+</x-workspace-shell>

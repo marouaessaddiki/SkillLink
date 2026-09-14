@@ -19,7 +19,6 @@ class StoreMissionRequest extends FormRequest
             'description' => ['required', 'string'],
             'budget' => ['required', 'numeric', 'min:0'],
             'deadline' => ['required', 'date', 'after_or_equal:today'],
-            'status' => ['nullable', 'in:open,in_progress,completed,cancelled'],
         ];
     }
 }

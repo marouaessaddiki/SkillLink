@@ -1,11 +1,5 @@
 
-<x-app-layout>
-
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Edit Category') }}
-        </h2>
-    </x-slot>
+<x-admin-shell title="Edit category">
 
     <div class="py-6">
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
@@ -38,6 +32,17 @@
                         @enderror
                     </div>
 
+                    <div class="mt-5">
+                        <label for="description" class="block font-medium text-sm text-gray-700">
+                            Description
+                        </label>
+                        <textarea id="description" name="description" rows="4"
+                                  class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('description', $category->description) }}</textarea>
+                        @error('description')
+                            <p class="text-red-600 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
                     <div class="mt-6 flex items-center gap-3">
 
                         <button
@@ -63,5 +68,5 @@
         </div>
     </div>
 
-</x-app-layout>
+</x-admin-shell>
 ```

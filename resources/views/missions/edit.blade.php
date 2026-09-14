@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Mission - SkillLink</title>
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-</head>
-
-<body class="bg-gray-100 min-h-screen">
+<x-workspace-shell role="client" title="Edit mission" eyebrow="Client workspace">
 
     <div class="max-w-3xl mx-auto py-10 px-6">
 
@@ -39,6 +29,27 @@
 
                 @csrf
                 @method('PUT')
+
+                <div class="mb-5">
+
+                    <label for="category_id"
+                           class="block font-medium text-gray-700 mb-2">
+                        Category
+                    </label>
+
+                    <select id="category_id"
+                            name="category_id"
+                            required
+                            class="w-full border-gray-300 rounded-lg shadow-sm">
+                        @foreach($categories as $category)
+                            <option value="{{ $category->id }}"
+                                {{ old('category_id', $mission->category_id) == $category->id ? 'selected' : '' }}>
+                                {{ $category->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                </div>
 
                 <div class="mb-5">
 
@@ -117,42 +128,6 @@
 
                 </div>
 
-                <div class="mt-5 mb-6">
-
-                    <label for="status"
-                           class="block font-medium text-gray-700 mb-2">
-                        Status
-                    </label>
-
-                    <select
-                        id="status"
-                        name="status"
-                        class="w-full border-gray-300 rounded-lg shadow-sm">
-
-                        <option value="open"
-                            {{ old('status', $mission->status) == 'open' ? 'selected' : '' }}>
-                            Open
-                        </option>
-
-                        <option value="in_progress"
-                            {{ old('status', $mission->status) == 'in_progress' ? 'selected' : '' }}>
-                            In Progress
-                        </option>
-
-                        <option value="completed"
-                            {{ old('status', $mission->status) == 'completed' ? 'selected' : '' }}>
-                            Completed
-                        </option>
-
-                        <option value="cancelled"
-                            {{ old('status', $mission->status) == 'cancelled' ? 'selected' : '' }}>
-                            Cancelled
-                        </option>
-
-                    </select>
-
-                </div>
-
                 <div class="flex justify-between items-center">
 
                     <a href="{{ route('missions.index') }}"
@@ -174,5 +149,4 @@
 
     </div>
 
-</body>
-</html>
+</x-workspace-shell>

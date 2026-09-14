@@ -5,13 +5,36 @@ namespace App\Http\Controllers;
 use App\Models\Mission;
 use App\Models\Application;
 use Illuminate\Http\Request;
+use App\Notifications\PlatformNotification;
 
 class FreelanceMissionController extends Controller
 {
+    public function show(Mission $mission)
+    {
+        abort_if($mission->status !== 'open', 404);
+
+        $mission->load(['category', 'client'])->loadCount('applications');
+        $application = $mission->applications()
+            ->where('freelance_id', auth()->id())
+            ->first();
+
+        return view('freelance.missions.show', compact('mission', 'application'));
+    }
+
        public function index(Request $request)
 {
-    $query = Mission::with('category')
-        ->where('status', 'open');
+    $query = Mission::with(['category', 'client'])
+        ->withCount('applications')
+        ->where('status', $request->input('status', 'open'));
+
+    if ($request->filled('status') && ! in_array($request->status, [
+        'open',
+        'in_progress',
+        'completed',
+        'cancelled',
+    ], true)) {
+        abort(422, 'Invalid mission status.');
+    }
 
     // Search by mission title
     if ($request->filled('search')) {
@@ -33,7 +56,18 @@ class FreelanceMissionController extends Controller
         $query->where('budget', '<=', $request->max_budget);
     }
 
-    $missions = $query->latest()->get();
+    if ($request->filled('deadline')) {
+        $query->whereDate('deadline', '<=', $request->deadline);
+    }
+
+    match ($request->input('sort', 'latest')) {
+        'budget_low' => $query->orderBy('budget'),
+        'budget_high' => $query->orderByDesc('budget'),
+        'deadline' => $query->orderBy('deadline'),
+        default => $query->latest(),
+    };
+
+    $missions = $query->get();
 
     $categories = \App\Models\Category::orderBy('name')->get();
 
@@ -61,6 +95,11 @@ class FreelanceMissionController extends Controller
         $mission->update([
             'status' => 'completed',
         ]);
+
+        $mission->client->notify(new PlatformNotification(
+            'Your mission has been completed.',
+            $mission->id,
+        ));
 
         return redirect()
             ->route('freelance.applications.index')

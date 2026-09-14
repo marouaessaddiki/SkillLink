@@ -12,8 +12,16 @@ class Application extends Model
         'cover_letter',
         'status',
         'proposed_price',
-        'status',
+        'date_submission',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'date_submission' => 'datetime',
+            'proposed_price' => 'decimal:2',
+        ];
+    }
 
     public function mission()
     {

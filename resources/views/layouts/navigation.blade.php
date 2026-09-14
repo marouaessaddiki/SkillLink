@@ -1,7 +1,7 @@
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="border-b border-[var(--line)] bg-white/95 shadow-[0_4px_24px_rgba(23,35,61,.04)]">
 
     <!-- Primary Navigation Menu -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div class="flex justify-between h-16">
 
@@ -16,9 +16,7 @@
                             ? route('client.dashboard')
                             : route('freelance.dashboard')) }}">
 
-                        <x-application-logo
-                            class="block h-9 w-auto fill-current text-gray-800"
-                        />
+                        <span class="text-xl font-bold tracking-tight text-[var(--ink)]">Skill<span class="text-[var(--blue)]">Link</span></span>
 
                     </a>
 
@@ -115,18 +113,18 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
 
-                {{-- Notifications - Freelance only --}}
-                @if(auth()->user()->hasRole('freelance'))
+                {{-- Notifications --}}
+                @if(auth()->user()->hasRole('client') || auth()->user()->hasRole('freelance'))
 
                     <x-dropdown align="right" width="80">
 
                         <x-slot name="trigger">
 
                             <button
-                                class="relative inline-flex items-center px-3 py-2 text-gray-600 hover:text-gray-800"
+                                class="relative inline-flex items-center rounded-xl px-3 py-2 text-[var(--muted)] hover:bg-blue-50 hover:text-[var(--blue)]"
                             >
 
-                                🔔
+                                <span aria-hidden="true">♢</span><span class="sr-only">Notifications</span>
 
                                 @if(auth()->user()->unreadNotifications->count() > 0)
 

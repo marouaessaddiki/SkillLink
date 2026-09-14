@@ -15,22 +15,26 @@
             <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
             <x-input-error :messages="$errors->get('email')" class="mt-2" />
         </div>
-        <div class="mt-4">
-    <x-input-label for="role" :value="__('I am a')" />
-
-    <select
-        id="role"
-        name="role"
-        class="block mt-1 w-full border-gray-300 rounded-md shadow-sm"
-        required
-    >
-        <option value="">Choose your role</option>
-        <option value="client">Client</option>
-        <option value="freelance">Freelance</option>
-    </select>
-
-    <x-input-error :messages="$errors->get('role')" class="mt-2" />
-</div>
+        <fieldset class="mt-6">
+            <legend class="text-sm font-semibold text-[var(--ink)]">Choose your path</legend>
+            <div class="mt-3 grid gap-3 sm:grid-cols-2">
+                <label class="relative cursor-pointer">
+                    <input type="radio" name="role" value="client" class="peer sr-only" {{ old('role') === 'client' ? 'checked' : '' }} required>
+                    <span class="block rounded-2xl border border-[var(--line)] p-4 transition peer-checked:border-[var(--blue)] peer-checked:bg-blue-50 peer-focus:ring-2 peer-focus:ring-blue-200">
+                        <span class="block text-sm font-bold text-[var(--ink)]">I need a freelancer</span>
+                        <span class="mt-1 block text-xs leading-5 text-[var(--muted)]">Publish a mission and bring your idea to life.</span>
+                    </span>
+                </label>
+                <label class="relative cursor-pointer">
+                    <input type="radio" name="role" value="freelance" class="peer sr-only" {{ old('role') === 'freelance' ? 'checked' : '' }}>
+                    <span class="block rounded-2xl border border-[var(--line)] p-4 transition peer-checked:border-[var(--violet)] peer-checked:bg-violet-50 peer-focus:ring-2 peer-focus:ring-violet-200">
+                        <span class="block text-sm font-bold text-[var(--ink)]">I offer my skills</span>
+                        <span class="mt-1 block text-xs leading-5 text-[var(--muted)]">Discover missions that match your strengths.</span>
+                    </span>
+                </label>
+            </div>
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </fieldset>
 
         <!-- Password -->
         <div class="mt-4">

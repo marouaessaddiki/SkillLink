@@ -6,6 +6,7 @@ use App\Http\Requests\StoreReviewRequest;
 use App\Models\Mission;
 use App\Models\Review;
 use App\Http\Requests\StoreFreelanceReviewRequest;
+use App\Notifications\PlatformNotification;
 
 class ReviewController extends Controller
 {
@@ -46,6 +47,11 @@ class ReviewController extends Controller
             'rating' => $request->rating,
             'comment' => $request->comment,
         ]);
+
+        $application->freelance->notify(new PlatformNotification(
+            'You received a new review.',
+            $mission->id,
+        ));
 
         return back()->with(
             'success',
@@ -90,6 +96,11 @@ class ReviewController extends Controller
         'rating' => $request->rating,
         'comment' => $request->comment,
     ]);
+
+    $mission->client->notify(new PlatformNotification(
+        'You received a new review.',
+        $mission->id,
+    ));
 
     return back()->with(
         'success',
