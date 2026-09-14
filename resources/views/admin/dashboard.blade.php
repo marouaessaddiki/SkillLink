@@ -1,9 +1,228 @@
-<x-admin-shell title="Platform overview">
-    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p class="text-xs font-bold uppercase tracking-[.2em] text-blue-600">Platform health</p><h2 class="mt-2 text-3xl font-bold tracking-tight text-[#111a2e]">Monitor SkillLink activity</h2><p class="mt-2 text-slate-500">Manage the people, missions and connections powering the platform.</p></div><button class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-bold text-slate-600">Last 30 days ▾</button></div>
-    <section class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3"><div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total users</p><div class="mt-3 flex items-end justify-between"><p class="text-3xl font-bold text-[#111a2e]">{{ $stats['users'] }}</p><span class="text-xs font-bold text-emerald-600">+12.5%</span></div><div class="mt-4 h-1.5 rounded-full bg-slate-100"><div class="h-1.5 w-4/5 rounded-full bg-blue-600"></div></div></div><div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">Freelancers</p><div class="mt-3 flex items-end justify-between"><p class="text-3xl font-bold text-[#111a2e]">{{ $stats['freelances'] }}</p><span class="text-xs font-bold text-emerald-600">+8.2%</span></div><p class="mt-4 text-xs text-slate-400">{{ $stats['users'] ? round($stats['freelances'] / $stats['users'] * 100) : 0 }}% of user base</p></div><div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">Clients</p><div class="mt-3 flex items-end justify-between"><p class="text-3xl font-bold text-[#111a2e]">{{ $stats['clients'] }}</p><span class="text-xs font-bold text-blue-600">+5.4%</span></div><p class="mt-4 text-xs text-slate-400">Mission owners</p></div><div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total missions</p><div class="mt-3 flex items-end justify-between"><p class="text-3xl font-bold text-[#111a2e]">{{ $stats['missions'] }}</p><span class="text-xs font-bold text-emerald-600">+10.1%</span></div><p class="mt-4 text-xs text-slate-400">All time</p></div><div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">Active missions</p><div class="mt-3 flex items-end justify-between"><p class="text-3xl font-bold text-amber-600">{{ $stats['active'] }}</p><span class="text-xs font-bold text-amber-600">In progress</span></div><p class="mt-4 text-xs text-slate-400">Currently being delivered</p></div><div class="rounded-2xl border border-slate-200 bg-white p-5"><p class="text-xs font-bold uppercase tracking-wider text-slate-400">Completed missions</p><div class="mt-3 flex items-end justify-between"><p class="text-3xl font-bold text-emerald-600">{{ $stats['completed'] }}</p><span class="text-xs font-bold text-emerald-600">{{ $stats['applications'] }} offers</span></div><p class="mt-4 text-xs text-slate-400">Successful outcomes</p></div></section>
-    <div class="mt-8 grid gap-6 xl:grid-cols-[1.35fr_.65fr]"><section class="rounded-2xl border border-slate-200 bg-white p-6"><div class="flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-wider text-blue-600">Analytics</p><h3 class="mt-1 text-xl font-bold text-[#111a2e]">Platform activity</h3></div><div class="flex gap-1 rounded-lg bg-slate-100 p-1"><span class="rounded-md bg-white px-2 py-1 text-[10px] font-bold text-blue-600 shadow-sm">30D</span><span class="px-2 py-1 text-[10px] font-bold text-slate-400">90D</span></div></div><div class="mt-8 flex h-48 items-end gap-2 border-b border-l border-slate-200 px-3 pb-0 sm:gap-4"><div class="h-[38%] flex-1 rounded-t-md bg-blue-100"></div><div class="h-[52%] flex-1 rounded-t-md bg-blue-200"></div><div class="h-[44%] flex-1 rounded-t-md bg-blue-300"></div><div class="h-[69%] flex-1 rounded-t-md bg-blue-400"></div><div class="h-[57%] flex-1 rounded-t-md bg-blue-500"></div><div class="h-[82%] flex-1 rounded-t-md bg-blue-600"></div><div class="h-[73%] flex-1 rounded-t-md bg-blue-700"></div><div class="h-[91%] flex-1 rounded-t-md bg-[#111a2e]"></div></div><div class="mt-4 flex flex-wrap gap-4 text-xs text-slate-500"><span><i class="mr-1 inline-block h-2 w-2 rounded-full bg-blue-600"></i>Missions created</span><span><i class="mr-1 inline-block h-2 w-2 rounded-full bg-[#111a2e]"></i>Applications submitted</span><span><i class="mr-1 inline-block h-2 w-2 rounded-full bg-emerald-500"></i>Completed</span></div></section><section class="rounded-2xl border border-slate-200 bg-white p-6"><p class="text-xs font-bold uppercase tracking-wider text-blue-600">Distribution</p><h3 class="mt-1 text-xl font-bold text-[#111a2e]">Mission overview</h3><div class="mt-7 space-y-5">@foreach($missionStatuses as $status => $count)<div><div class="mb-2 flex justify-between text-xs font-bold"><span class="capitalize text-slate-600">{{ str_replace('_', ' ', $status) }}</span><span class="text-[#111a2e]">{{ $count }}</span></div><div class="h-2 rounded-full bg-slate-100"><div class="h-2 rounded-full {{ $status === 'completed' ? 'bg-emerald-500' : ($status === 'in_progress' ? 'bg-amber-500' : ($status === 'cancelled' ? 'bg-red-400' : 'bg-blue-600')) }}" style="width: {{ $stats['missions'] ? max(4, round($count / $stats['missions'] * 100)) : 4 }}%"></div></div></div>@endforeach</div></section></div>
+<x-admin-shell title="Platform Overview">
+    <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
+        <div>
+            <p class="text-xs font-bold uppercase tracking-widest text-blue-600">Operations & Health</p>
+            <h2 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Platform Metrics & Governance</h2>
+            <p class="mt-1 text-sm text-slate-500">Real-time overview of members, missions, and performance indicators.</p>
+        </div>
+        <div class="flex items-center gap-2">
+            <span class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-xs">
+                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+                System Operational
+            </span>
+        </div>
+    </div>
 
-    <div class="mt-8 grid gap-6 xl:grid-cols-[1.3fr_.7fr]"><section class="overflow-hidden rounded-2xl border border-slate-200 bg-white"><div class="flex items-center justify-between border-b border-slate-200 p-6"><div><p class="text-xs font-bold uppercase tracking-wider text-blue-600">Operations</p><h3 class="mt-1 text-xl font-bold text-[#111a2e]">Recent missions</h3></div><a href="{{ route('admin.missions.index') }}" class="text-xs font-bold text-blue-600">View all →</a></div><div class="overflow-x-auto"><table class="min-w-full text-left text-sm"><thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-400"><tr><th class="px-6 py-3">Mission</th><th class="px-6 py-3">Client</th><th class="px-6 py-3">Budget</th><th class="px-6 py-3">Status</th></tr></thead><tbody class="divide-y divide-slate-100">@forelse($recentMissions as $mission)<tr><td class="px-6 py-4 font-bold text-[#111a2e]">{{ $mission->title }}</td><td class="px-6 py-4 text-slate-500">{{ $mission->client->name ?? '—' }}</td><td class="px-6 py-4 text-slate-500">{{ number_format($mission->budget, 2) }} MAD</td><td class="px-6 py-4"><span class="rounded-full bg-blue-50 px-2 py-1 text-[10px] font-bold uppercase text-blue-700">{{ str_replace('_', ' ', $mission->status) }}</span></td></tr>@empty<tr><td colspan="4" class="px-6 py-8 text-center text-slate-400">No missions yet.</td></tr>@endforelse</tbody></table></div></section><section class="rounded-2xl border border-slate-200 bg-white p-6"><div class="flex items-center justify-between"><div><p class="text-xs font-bold uppercase tracking-wider text-blue-600">People</p><h3 class="mt-1 text-xl font-bold text-[#111a2e]">Recent users</h3></div><a href="{{ route('admin.users.index') }}" class="text-xs font-bold text-blue-600">View all →</a></div><div class="mt-5 space-y-4">@forelse($recentUsers as $user)<div class="flex items-center gap-3"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#111a2e]">{{ strtoupper(substr($user->name, 0, 1)) }}</span><div class="min-w-0 flex-1"><p class="truncate text-sm font-bold text-[#111a2e]">{{ $user->name }}</p><p class="truncate text-xs text-slate-400">{{ $user->email }}</p></div><span class="text-[10px] font-bold uppercase text-slate-400">{{ $user->roles->first()?->name ?? 'user' }}</span></div>@empty<p class="py-5 text-sm text-slate-400">No users yet.</p>@endforelse</div></section></div>
+    <!-- Core KPI Grid -->
+    <section class="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+        <div class="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-subtle">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Users</p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                    <x-icon name="users" class="w-3.5 h-3.5" />
+                </span>
+            </div>
+            <p class="mt-3 text-3xl font-bold tracking-tight text-slate-900">{{ $stats['users'] }}</p>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <span>{{ $stats['clients'] }} clients</span>
+                <span>&bull;</span>
+                <span>{{ $stats['freelances'] }} freelancers</span>
+            </div>
+        </div>
 
-    <div class="mt-8 grid gap-6 xl:grid-cols-2"><section class="rounded-2xl border border-slate-200 bg-white p-6"><div class="flex items-center justify-between"><h3 class="text-xl font-bold text-[#111a2e]">Attention required</h3><span class="h-2 w-2 rounded-full bg-emerald-500"></span></div><div class="mt-5 space-y-3"><a href="{{ route('admin.applications.index') }}" class="flex items-center gap-3 rounded-xl bg-amber-50 p-4 text-sm font-semibold text-amber-800">⚠ <span>{{ $pendingApplications->count() }} pending applications need review</span></a><a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 rounded-xl bg-blue-50 p-4 text-sm font-semibold text-blue-800">ⓘ <span>Review the newest registered users</span></a></div></section><section class="rounded-2xl border border-slate-200 bg-white p-6"><h3 class="text-xl font-bold text-[#111a2e]">Quick actions</h3><div class="mt-5 flex flex-wrap gap-2"><a href="{{ route('admin.users.index') }}" class="rounded-xl bg-[#111a2e] px-4 py-3 text-xs font-bold text-white">Manage users</a><a href="{{ route('admin.missions.index') }}" class="rounded-xl bg-blue-600 px-4 py-3 text-xs font-bold text-white">Manage missions</a><a href="{{ route('admin.categories.index') }}" class="rounded-xl border border-slate-200 px-4 py-3 text-xs font-bold text-slate-600">Categories</a><a href="{{ route('admin.applications.index') }}" class="rounded-xl border border-slate-200 px-4 py-3 text-xs font-bold text-slate-600">Applications</a></div></section></div>
-+</x-admin-shell>
+        <div class="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-subtle">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Active Missions</p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600">
+                    <x-icon name="clock" class="w-3.5 h-3.5" />
+                </span>
+            </div>
+            <p class="mt-3 text-3xl font-bold tracking-tight text-amber-600">{{ $stats['active'] }}</p>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <span>In delivery progress</span>
+                <span class="font-medium text-slate-700">{{ $stats['missions'] ? round($stats['active'] / $stats['missions'] * 100) : 0 }}% of missions</span>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-subtle">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Completed Missions</p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                    <x-icon name="check-circle" class="w-3.5 h-3.5" />
+                </span>
+            </div>
+            <p class="mt-3 text-3xl font-bold tracking-tight text-emerald-600">{{ $stats['completed'] }}</p>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <span>Delivered successfully</span>
+                <span class="font-medium text-emerald-600">Closed</span>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-subtle">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Total Missions</p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                    <x-icon name="briefcase" class="w-3.5 h-3.5" />
+                </span>
+            </div>
+            <p class="mt-3 text-3xl font-bold tracking-tight text-slate-900">{{ $stats['missions'] }}</p>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <span>All time published</span>
+                <span>{{ $missionStatuses['open'] ?? 0 }} open now</span>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-subtle">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Applications Sent</p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                    <x-icon name="arrow-up-right" class="w-3.5 h-3.5" />
+                </span>
+            </div>
+            <p class="mt-3 text-3xl font-bold tracking-tight text-indigo-600">{{ $stats['applications'] }}</p>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <span>Total freelancer proposals</span>
+                <span>{{ $pendingApplications->count() }} pending</span>
+            </div>
+        </div>
+
+        <div class="rounded-2xl border border-slate-200/90 bg-white p-5 shadow-subtle">
+            <div class="flex items-center justify-between">
+                <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Marketplace Balance</p>
+                <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 text-slate-600">
+                    <x-icon name="cash" class="w-3.5 h-3.5" />
+                </span>
+            </div>
+            <p class="mt-3 text-3xl font-bold tracking-tight text-slate-900">
+                {{ $stats['clients'] ? round($stats['freelances'] / max(1, $stats['clients']), 1) : 0 }}x
+            </p>
+            <div class="mt-3 flex items-center justify-between text-xs text-slate-500 border-t border-slate-100 pt-3">
+                <span>Freelancers per client</span>
+                <span class="text-emerald-600 font-medium">Healthy</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Missions Distribution & Operations -->
+    <div class="mt-8 grid gap-6 xl:grid-cols-[1.3fr_.7fr]">
+        <!-- Recent Missions Table -->
+        <section class="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-subtle">
+            <div class="flex items-center justify-between border-b border-slate-100 p-5">
+                <div class="flex items-center gap-2">
+                    <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                        <x-icon name="briefcase" class="w-3.5 h-3.5" />
+                    </span>
+                    <h3 class="font-bold text-slate-900">Recent Missions</h3>
+                </div>
+                <a href="{{ route('admin.missions.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View all &rarr;</a>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full text-left text-sm divide-y divide-slate-100">
+                    <thead class="bg-slate-50/75 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                        <tr>
+                            <th class="px-5 py-3">Mission</th>
+                            <th class="px-5 py-3">Client</th>
+                            <th class="px-5 py-3">Budget</th>
+                            <th class="px-5 py-3">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        @forelse($recentMissions as $mission)
+                            <tr class="transition-colors hover:bg-slate-50/60">
+                                <td class="px-5 py-3.5 font-semibold text-slate-900">{{ $mission->title }}</td>
+                                <td class="px-5 py-3.5 text-slate-500">{{ $mission->client->name ?? '—' }}</td>
+                                <td class="px-5 py-3.5 font-medium text-slate-800 whitespace-nowrap">{{ number_format($mission->budget, 2) }} MAD</td>
+                                <td class="px-5 py-3.5 whitespace-nowrap">
+                                    <x-status-badge :status="$mission->status" size="sm" />
+                                </td>
+                            </tr>
+                        @empty
+                            <tr><td colspan="4" class="px-5 py-8 text-center text-slate-400 text-xs">No missions published yet.</td></tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Mission Status Distribution -->
+        <section class="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-subtle">
+            <h3 class="font-bold text-slate-900">Status Distribution</h3>
+            <p class="mt-1 text-xs text-slate-500">Breakdown across all lifecycle stages.</p>
+            <div class="mt-6 space-y-4">
+                @foreach($missionStatuses as $status => $count)
+                    <div>
+                        <div class="mb-1.5 flex justify-between text-xs font-semibold">
+                            <span class="capitalize text-slate-700">{{ str_replace('_', ' ', $status) }}</span>
+                            <span class="text-slate-900">{{ $count }}</span>
+                        </div>
+                        <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+                            <div class="h-2 rounded-full {{ $status === 'completed' ? 'bg-emerald-500' : ($status === 'in_progress' ? 'bg-amber-500' : ($status === 'cancelled' ? 'bg-slate-400' : 'bg-blue-600')) }}" 
+                                 style="width: {{ $stats['missions'] ? max(4, round($count / $stats['missions'] * 100)) : 4 }}%"></div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </section>
+    </div>
+
+    <!-- Users & Quick Operations -->
+    <div class="mt-8 grid gap-6 xl:grid-cols-2">
+        <!-- Recent Users -->
+        <section class="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-subtle">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+                <h3 class="font-bold text-slate-900">New Members</h3>
+                <a href="{{ route('admin.users.index') }}" class="text-xs font-semibold text-blue-600 hover:text-blue-700">View users &rarr;</a>
+            </div>
+            <div class="mt-4 divide-y divide-slate-100">
+                @forelse($recentUsers as $u)
+                    <div class="flex items-center justify-between py-3 first:pt-0 last:pb-0">
+                        <div class="flex items-center gap-3">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-xs font-bold text-white">
+                                {{ strtoupper(substr($u->name, 0, 1)) }}
+                            </span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900 leading-tight">{{ $u->name }}</p>
+                                <p class="text-xs text-slate-400">{{ $u->email }}</p>
+                            </div>
+                        </div>
+                        <span class="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase text-slate-600">
+                            {{ $u->roles->first()?->name ?? 'User' }}
+                        </span>
+                    </div>
+                @empty
+                    <p class="py-6 text-center text-xs text-slate-400">No users registered yet.</p>
+                @endforelse
+            </div>
+        </section>
+
+        <!-- Quick Admin Actions -->
+        <section class="rounded-2xl border border-slate-200/90 bg-white p-6 shadow-subtle flex flex-col justify-between">
+            <div>
+                <h3 class="font-bold text-slate-900">Quick Operations</h3>
+                <p class="mt-1 text-xs text-slate-500">Jump directly to governance modules.</p>
+                <div class="mt-5 grid grid-cols-2 gap-3">
+                    <a href="{{ route('admin.missions.index') }}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                        <x-icon name="briefcase" class="w-4 h-4 text-blue-600" />
+                        <span>Missions</span>
+                    </a>
+                    <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                        <x-icon name="users" class="w-4 h-4 text-slate-700" />
+                        <span>Users</span>
+                    </a>
+                    <a href="{{ route('admin.categories.index') }}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                        <x-icon name="layers" class="w-4 h-4 text-indigo-600" />
+                        <span>Categories</span>
+                    </a>
+                    <a href="{{ route('admin.applications.index') }}" class="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm font-semibold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-colors">
+                        <x-icon name="document-text" class="w-4 h-4 text-amber-600" />
+                        <span>Offers</span>
+                    </a>
+                </div>
+            </div>
+            <div class="mt-6 rounded-xl bg-slate-50 p-3.5 text-xs text-slate-500 flex items-center justify-between">
+                <span>SkillLink v1.0 Admin Console</span>
+                <span class="font-semibold text-slate-700">MySQL &bull; Laratrust RBAC</span>
+            </div>
+        </section>
+    </div>
+</x-admin-shell>

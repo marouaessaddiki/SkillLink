@@ -16,7 +16,7 @@
                             ? route('client.dashboard')
                             : route('freelance.dashboard')) }}">
 
-                        <span class="text-xl font-bold tracking-tight text-[var(--ink)]">Skill<span class="text-[var(--blue)]">Link</span></span>
+                        <x-application-logo />
 
                     </a>
 
@@ -121,21 +121,18 @@
                         <x-slot name="trigger">
 
                             <button
-                                class="relative inline-flex items-center rounded-xl px-3 py-2 text-[var(--muted)] hover:bg-blue-50 hover:text-[var(--blue)]"
+                                class="relative inline-flex items-center rounded-xl p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                             >
-
-                                <span aria-hidden="true">♢</span><span class="sr-only">Notifications</span>
+                                <x-icon name="bell" class="w-5 h-5" />
+                                <span class="sr-only">Notifications</span>
 
                                 @if(auth()->user()->unreadNotifications->count() > 0)
-
                                     <span
-                                        class="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold rounded-full px-2 py-0.5"
+                                        class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 shadow-xs"
                                     >
                                         {{ auth()->user()->unreadNotifications->count() }}
                                     </span>
-
                                 @endif
-
                             </button>
 
                         </x-slot>

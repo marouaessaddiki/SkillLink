@@ -1,42 +1,76 @@
-@import url('https://fonts.bunny.net/css?family=dm-sans:400,500,600,700|space-grotesk:500,600,700');
+@import url('https://fonts.bunny.net/css?family=inter:400,500,600,700|plus-jakarta-sans:400,500,600,700,800|space-grotesk:500,600,700');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-	--ink: #17233d;
-	--muted: #667085;
-	--paper: #f6f8fc;
-	--line: #e6eaf2;
-	--blue: #3859e8;
-	--blue-dark: #273fb4;
-	--violet: #7656e8;
-	--mint: #b9f1dc;
-	--coral: #ff8e79;
+    --ink: #0f172a;
+    --ink-secondary: #334155;
+    --muted: #64748b;
+    --paper: #f8fafc;
+    --surface: #ffffff;
+    --line: #e2e8f0;
+    --line-subtle: #f1f5f9;
+    --blue: #2563eb;
+    --blue-dark: #1d4ed8;
+    --blue-light: #eff6ff;
+    --violet: #6366f1;
+    --mint: #10b981;
+    --coral: #f43f5e;
 }
 
 @layer base {
-	html { scroll-behavior: smooth; }
-	body { background: var(--paper); color: var(--ink); font-family: 'DM Sans', sans-serif; }
-	h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; }
+    html {
+        scroll-behavior: smooth;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+    body {
+        background-color: var(--paper);
+        color: var(--ink);
+        font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+    h1, h2, h3, h4 {
+        letter-spacing: -0.025em;
+        font-weight: 700;
+        color: var(--ink);
+    }
 }
 
 @layer components {
-	.sl-button { @apply inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 text-sm font-bold transition duration-200; }
-	.sl-button-primary { @apply sl-button bg-[var(--blue)] text-white shadow-lg shadow-blue-200 hover:-translate-y-0.5 hover:bg-[var(--blue-dark)]; }
-	.sl-button-secondary { @apply sl-button border border-[var(--line)] bg-white text-[var(--ink)] hover:border-blue-200 hover:bg-blue-50; }
-	.sl-kicker { @apply text-xs font-bold uppercase tracking-[0.2em] text-[var(--blue)]; }
-	.sl-panel { @apply rounded-3xl border border-[var(--line)] bg-white shadow-[0_18px_60px_rgba(23,35,61,0.08)]; }
+    .sl-button {
+        @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none;
+    }
+    .sl-button-primary {
+        @apply sl-button bg-blue-600 text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 focus-visible:ring-blue-600;
+    }
+    .sl-button-secondary {
+        @apply sl-button border border-slate-200 bg-white text-slate-700 shadow-sm hover:bg-slate-50 hover:text-slate-900 active:bg-slate-100 focus-visible:ring-slate-400;
+    }
+    .sl-button-danger {
+        @apply sl-button border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 active:bg-rose-200 focus-visible:ring-rose-500;
+    }
+    .sl-kicker {
+        @apply text-xs font-semibold uppercase tracking-widest text-blue-600;
+    }
+    .sl-panel {
+        @apply rounded-2xl border border-slate-200/90 bg-white shadow-subtle transition-shadow duration-200;
+    }
+    .sl-panel-hover {
+        @apply sl-panel hover:border-slate-300 hover:shadow-elevated;
+    }
 }
 
-.sl-grid { background-image: linear-gradient(to right, rgba(56, 89, 232, .06) 1px, transparent 1px), linear-gradient(to bottom, rgba(56, 89, 232, .06) 1px, transparent 1px); background-size: 32px 32px; }
-.sl-reveal { animation: sl-reveal .7s ease both; }
-.sl-reveal-delay { animation: sl-reveal .7s .12s ease both; }
-@keyframes sl-reveal { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+/* Subtle, refined dot grid pattern for hero and headers */
+.sl-subtle-grid {
+    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+    background-size: 24px 24px;
+}
 
-.sl-workspace { background: var(--paper); }
-.sl-workspace header { border-bottom: 1px solid var(--line); background: rgba(255,255,255,.88); }
-.sl-workspace .bg-white.rounded-xl.shadow,
-.sl-workspace .bg-white.rounded-xl.shadow-md { border: 1px solid var(--line); box-shadow: 0 14px 40px rgba(23,35,61,.06); }
-.sl-workspace .text-3xl { letter-spacing: -.04em; }
+.sl-badge-open { @apply inline-flex items-center gap-1.5 rounded-full border border-sky-200 bg-sky-50 px-2.5 py-0.5 text-xs font-medium text-sky-700; }
+.sl-badge-progress { @apply inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-800; }
+.sl-badge-completed { @apply inline-flex items-center gap-1.5 rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-800; }
+.sl-badge-rejected { @apply inline-flex items-center gap-1.5 rounded-full border border-rose-200 bg-rose-50 px-2.5 py-0.5 text-xs font-medium text-rose-700; }
+
+.sl-workspace { background-color: var(--paper); }

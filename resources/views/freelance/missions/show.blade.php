@@ -1,18 +1,166 @@
-<x-workspace-shell role="freelance" title="Mission details" eyebrow="Find missions">
+<x-workspace-shell role="freelance" title="Mission Details" eyebrow="Find Missions">
     <div class="mx-auto max-w-6xl">
-        <a href="{{ route('freelance.missions.index') }}" class="text-sm font-bold text-[var(--muted)] hover:text-[var(--blue)]">← Back to missions</a>
-        <div class="mt-6 grid gap-8 lg:grid-cols-[1fr_360px] lg:items-start">
-            <article>
-                <div class="flex flex-wrap items-center gap-3"><span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[var(--blue)]">{{ $mission->category?->name ?? 'Open category' }}</span><span class="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-700">Open</span></div>
-                <h2 class="mt-5 text-4xl font-bold leading-tight tracking-tight text-[var(--ink)] sm:text-5xl">{{ $mission->title }}</h2>
-                <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--muted)]"><span>By <strong class="text-[var(--ink)]">{{ $mission->client->name }}</strong></span><span>Posted {{ $mission->created_at->diffForHumans() }}</span><span>{{ $mission->applications_count }} applications</span></div>
+        <a href="{{ route('freelance.missions.index') }}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors">
+            <x-icon name="chevron-left" class="w-3.5 h-3.5" />
+            <span>Back to Mission Board</span>
+        </a>
 
-                <section class="sl-panel mt-8 p-6 sm:p-8"><p class="sl-kicker">About this mission</p><p class="mt-4 whitespace-pre-line text-base leading-8 text-[var(--muted)]">{{ $mission->description }}</p></section>
-                <section class="mt-6 grid gap-4 sm:grid-cols-2"><div class="sl-panel p-6"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Budget</p><p class="mt-3 text-3xl font-bold text-[var(--ink)]">{{ number_format($mission->budget, 2) }} <span class="text-base font-semibold text-[var(--muted)]">MAD</span></p><p class="mt-1 text-sm text-[var(--muted)]">Client budget</p></div><div class="sl-panel p-6"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Deadline</p><p class="mt-3 text-2xl font-bold text-[var(--ink)]">{{ $mission->deadline }}</p><p class="mt-1 text-sm text-[var(--muted)]">Plan your delivery</p></div></section>
-                <section class="mt-6 sl-panel p-6 sm:p-8"><p class="sl-kicker">Mission path</p><div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-0"><div class="flex items-center gap-3 sm:flex-1"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-blue-100 text-sm font-bold text-blue-700">1</span><span class="text-sm font-semibold text-[var(--ink)]">Mission created</span></div><span class="hidden h-px flex-1 bg-blue-100 sm:block"></span><div class="flex items-center gap-3 sm:flex-1 sm:justify-center"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-amber-100 text-sm font-bold text-amber-700">2</span><span class="text-sm font-semibold text-[var(--ink)]">Offers open</span></div><span class="hidden h-px flex-1 bg-blue-100 sm:block"></span><div class="flex items-center gap-3 sm:flex-1 sm:justify-end"><span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-bold text-slate-500">3</span><span class="text-sm font-semibold text-[var(--muted)]">Result</span></div></div></section>
+        <div class="mt-6 grid gap-8 lg:grid-cols-[1fr_380px] lg:items-start">
+            <!-- Left: Mission Details Column -->
+            <article>
+                <div class="flex flex-wrap items-center gap-2.5">
+                    <span class="rounded-md bg-blue-50 px-2.5 py-1 text-xs font-semibold text-blue-700">
+                        {{ $mission->category?->name ?? 'General' }}
+                    </span>
+                    <x-status-badge :status="$mission->status" size="sm" />
+                </div>
+
+                <h2 class="mt-4 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl leading-tight">
+                    {{ $mission->title }}
+                </h2>
+
+                <div class="mt-4 flex flex-wrap items-center gap-4 text-xs text-slate-500 border-b border-slate-200/80 pb-6">
+                    <div class="flex items-center gap-1.5">
+                        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-slate-900 text-[10px] font-bold text-white">
+                            {{ strtoupper(substr($mission->client->name ?? 'C', 0, 1)) }}
+                        </span>
+                        <span>Client: <strong class="text-slate-800">{{ $mission->client->name }}</strong></span>
+                    </div>
+                    <span>&bull;</span>
+                    <span>Posted {{ $mission->created_at->diffForHumans() }}</span>
+                    <span>&bull;</span>
+                    <span>{{ $mission->applications_count }} {{ Str::plural('application', $mission->applications_count) }}</span>
+                </div>
+
+                <!-- Mission Description -->
+                <section class="sl-panel mt-6 p-6 sm:p-8">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400">Mission Overview &amp; Scope</h3>
+                    <div class="mt-4 whitespace-pre-line text-sm leading-relaxed text-slate-700 font-normal">
+                        {{ $mission->description }}
+                    </div>
+                </section>
+
+                <!-- Key Specifications -->
+                <section class="mt-6 grid gap-4 sm:grid-cols-2">
+                    <div class="sl-panel p-5">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Target Budget</p>
+                            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600">
+                                <x-icon name="cash" class="w-4 h-4" />
+                            </span>
+                        </div>
+                        <p class="mt-2 text-2xl font-bold text-slate-900">
+                            {{ number_format($mission->budget, 2) }} <span class="text-xs font-medium text-slate-500">MAD</span>
+                        </p>
+                        <p class="mt-1 text-xs text-slate-400">Fixed-price milestone target</p>
+                    </div>
+
+                    <div class="sl-panel p-5">
+                        <div class="flex items-center justify-between">
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Expected Delivery</p>
+                            <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-50 text-blue-600">
+                                <x-icon name="calendar" class="w-4 h-4" />
+                            </span>
+                        </div>
+                        <p class="mt-2 text-xl font-bold text-slate-900">{{ $mission->deadline }}</p>
+                        <p class="mt-1 text-xs text-slate-400">Target delivery date</p>
+                    </div>
+                </section>
             </article>
 
-            <aside class="lg:sticky lg:top-6"><div class="sl-panel overflow-hidden"><div class="bg-[var(--ink)] p-6 text-white"><p class="text-xs font-bold uppercase tracking-[.2em] text-[var(--mint)]">Your proposal</p><p class="mt-3 text-3xl font-bold">Make it count.</p><p class="mt-2 text-sm text-slate-300">Show the client why your skill is the right connection.</p></div>@if($application)<div class="p-6"><div class="flex items-center gap-3"><span class="flex h-10 w-10 items-center justify-center rounded-full bg-emerald-100 text-xl text-emerald-700">✓</span><div><p class="font-bold text-[var(--ink)]">Offer submitted</p><p class="text-xs text-[var(--muted)]">{{ strtoupper($application->status) }}</p></div></div><div class="mt-6 space-y-4 border-t border-[var(--line)] pt-5 text-sm"><p><span class="text-[var(--muted)]">Proposed price</span><strong class="float-right text-[var(--ink)]">{{ number_format($application->proposed_price, 2) }} MAD</strong></p><p><span class="text-[var(--muted)]">Submitted</span><span class="float-right text-[var(--ink)]">{{ $application->date_submission?->format('d M Y') ?? $application->created_at->format('d M Y') }}</span></p></div><div class="mt-6 rounded-2xl bg-slate-50 p-4"><p class="text-xs font-bold uppercase tracking-wider text-[var(--muted)]">Application timeline</p><p class="mt-3 text-sm font-semibold text-[var(--ink)]">Offer sent</p><div class="my-2 ml-2 h-5 border-l border-dashed border-blue-200"></div><p class="text-sm text-[var(--muted)]">Client reviewing</p><div class="my-2 ml-2 h-5 border-l border-dashed border-slate-200"></div><p class="text-sm text-[var(--muted)]">Accepted or rejected</p></div><a href="{{ route('freelance.applications.edit', $application) }}" class="mt-5 inline-block text-sm font-bold text-[var(--blue)]">Edit pending offer →</a></div>@else<form method="POST" action="{{ route('freelance.missions.apply', $mission) }}" class="p-6">@csrf<h3 class="text-lg font-bold text-[var(--ink)]">Send an offer</h3><div class="mt-5"><label for="proposed_price" class="text-sm font-semibold text-[var(--ink)]">Your proposed price</label><div class="mt-2 flex items-center rounded-xl border border-[var(--line)] bg-white px-3 focus-within:border-[var(--blue)]"><input id="proposed_price" name="proposed_price" type="number" min="0" step="0.01" required class="w-full border-0 px-0 py-3 text-[var(--ink)] focus:ring-0" placeholder="1,500"><span class="text-sm font-bold text-[var(--muted)]">MAD</span></div></div><div class="mt-4"><label for="cover_letter" class="text-sm font-semibold text-[var(--ink)]">Your message</label><textarea id="cover_letter" name="cover_letter" rows="6" required class="mt-2 w-full rounded-xl border-[var(--line)] text-sm placeholder:text-slate-400 focus:border-[var(--blue)] focus:ring-blue-100" placeholder="Explain why you're the right freelancer for this mission..."></textarea></div><button type="submit" class="sl-button-primary mt-5 w-full">Submit an offer <span>→</span></button><div class="mt-5 space-y-2 text-xs text-[var(--muted)]"><p>✓ Secure communication</p><p>✓ Clear mission requirements</p><p>✓ Client verified</p></div></form>@endif</div></aside>
+            <!-- Right: Proposal Submission Box -->
+            <aside class="lg:sticky lg:top-6">
+                <div class="sl-panel overflow-hidden">
+                    <div class="bg-slate-900 p-6 text-white">
+                        <p class="text-xs font-bold uppercase tracking-widest text-blue-400">Your Proposal</p>
+                        <h3 class="mt-1 text-xl font-bold text-white">Submit Your Terms</h3>
+                        <p class="mt-1 text-xs text-slate-300">Clients favor clear scope definitions and realistic quotes.</p>
+                    </div>
+
+                    @if($application)
+                        <!-- Already Applied State -->
+                        <div class="p-6">
+                            <div class="flex items-center gap-3">
+                                <span class="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600">
+                                    <x-icon name="check-circle" class="w-6 h-6" />
+                                </span>
+                                <div>
+                                    <p class="font-bold text-slate-900">Proposal Submitted</p>
+                                    <div class="mt-0.5">
+                                        <x-status-badge :status="$application->status" size="sm" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-6 space-y-3 border-t border-slate-100 pt-4 text-xs">
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Your Proposed Price:</span>
+                                    <strong class="text-slate-900">{{ number_format($application->proposed_price, 2) }} MAD</strong>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span class="text-slate-500">Date Sent:</span>
+                                    <span class="text-slate-700">{{ $application->date_submission?->format('d M Y') ?? $application->created_at->format('d M Y') }}</span>
+                                </div>
+                            </div>
+
+                            <div class="mt-5 rounded-xl bg-slate-50 p-4 text-xs text-slate-600 border border-slate-100">
+                                <p class="font-semibold text-slate-800">Your Cover Message:</p>
+                                <p class="mt-1.5 leading-relaxed">{{ $application->cover_letter }}</p>
+                            </div>
+
+                            @if($application->status === 'pending')
+                                <a href="{{ route('freelance.applications.edit', $application) }}" class="sl-button-secondary w-full mt-5 text-xs py-2">
+                                    <x-icon name="pencil" class="w-3.5 h-3.5" />
+                                    <span>Edit Pending Proposal</span>
+                                </a>
+                            @endif
+                        </div>
+                    @else
+                        <!-- Proposal Submission Form -->
+                        <form method="POST" action="{{ route('freelance.missions.apply', $mission) }}" class="p-6">
+                            @csrf
+                            <div>
+                                <label for="proposed_price" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                    Your Proposed Price (MAD)
+                                </label>
+                                <div class="mt-1.5 flex items-center rounded-xl border border-slate-200 bg-white px-3 focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100">
+                                    <input id="proposed_price" name="proposed_price" type="number" min="0" step="0.01" required 
+                                           class="w-full border-0 bg-transparent py-2.5 text-sm font-semibold text-slate-900 placeholder:text-slate-400 focus:ring-0" 
+                                           placeholder="e.g. 5000">
+                                    <span class="text-xs font-bold text-slate-400">MAD</span>
+                                </div>
+                                <x-input-error :messages="$errors->get('proposed_price')" class="mt-1" />
+                            </div>
+
+                            <div class="mt-4">
+                                <label for="cover_letter" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider">
+                                    Cover Letter &amp; Technical Approach
+                                </label>
+                                <textarea id="cover_letter" name="cover_letter" rows="5" required 
+                                          class="mt-1.5 w-full rounded-xl border border-slate-200 text-sm placeholder:text-slate-400 focus:border-blue-600 focus:ring-2 focus:ring-blue-100" 
+                                          placeholder="Explain your relevant experience, proposed milestones, and delivery timeframe..."></textarea>
+                                <x-input-error :messages="$errors->get('cover_letter')" class="mt-1" />
+                            </div>
+
+                            <button type="submit" class="sl-button-primary mt-5 w-full py-3">
+                                <span>Send Proposal</span>
+                                <x-icon name="arrow-up-right" class="w-4 h-4" />
+                            </button>
+
+                            <div class="mt-5 space-y-2 border-t border-slate-100 pt-4 text-[11px] text-slate-500">
+                                <p class="flex items-center gap-1.5">
+                                    <x-icon name="shield-check" class="w-3.5 h-3.5 text-emerald-600" />
+                                    <span>Milestone payment protection</span>
+                                </p>
+                                <p class="flex items-center gap-1.5">
+                                    <x-icon name="check" class="w-3.5 h-3.5 text-blue-600" />
+                                    <span>Direct review upon client acceptance</span>
+                                </p>
+                            </div>
+                        </form>
+                    @endif
+                </div>
+            </aside>
         </div>
     </div>
 </x-workspace-shell>

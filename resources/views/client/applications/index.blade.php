@@ -1,13 +1,122 @@
-<x-workspace-shell role="client" title="Offers & applications" eyebrow="Client workspace">
-    <div class="mx-auto max-w-6xl">
-        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-end"><div><p class="sl-kicker">Compare with confidence</p><h2 class="mt-2 text-4xl font-bold tracking-tight text-[var(--ink)]">Freelancer offers</h2><p class="mt-2 text-[var(--muted)]">Review proposals and choose the right person for each mission.</p></div><span class="rounded-full bg-blue-50 px-3 py-2 text-xs font-bold text-[var(--blue)]">{{ $applications->where('status', 'pending')->count() }} pending review</span></div>
-        <div class="mt-7 flex gap-2 overflow-x-auto border-b border-[var(--line)] pb-3"><span class="rounded-full bg-blue-50 px-4 py-2 text-xs font-bold text-[var(--blue)]">All offers</span><span class="rounded-full px-4 py-2 text-xs font-bold text-[var(--muted)]">Pending</span><span class="rounded-full px-4 py-2 text-xs font-bold text-[var(--muted)]">Accepted</span><span class="rounded-full px-4 py-2 text-xs font-bold text-[var(--muted)]">Rejected</span></div>
-        <div class="mt-6 space-y-7">
+<x-workspace-shell role="client" title="Offers & Proposals" eyebrow="Client Workspace">
+    <div class="mx-auto max-w-5xl">
+        <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div>
+                <h2 class="text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl">Received Offers</h2>
+                <p class="mt-1 text-sm text-slate-500">Compare freelancer proposals, review cover letters, and select the best fit for your mission.</p>
+            </div>
+            <span class="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 border border-blue-200">
+                {{ $applications->where('status', 'pending')->count() }} pending review
+            </span>
+        </div>
+
+        @if(session('success'))
+            <div class="mt-6 flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50/80 px-4 py-3 text-sm font-medium text-emerald-800">
+                <x-icon name="check-circle" class="w-5 h-5 text-emerald-600 shrink-0" />
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        <div class="mt-8 space-y-8">
             @forelse($applications->groupBy('mission_id') as $missionApplications)
                 @php($mission = $missionApplications->first()->mission)
-                <section class="sl-panel overflow-hidden"><div class="flex flex-col justify-between gap-3 border-b border-[var(--line)] bg-slate-50/70 p-5 sm:flex-row sm:items-center sm:px-6"><div><p class="text-xs font-bold uppercase tracking-wider text-[var(--blue)]">{{ $mission->category?->name ?? 'Mission' }}</p><h3 class="mt-1 text-xl font-bold text-[var(--ink)]">{{ $mission->title }}</h3></div><div class="text-sm text-[var(--muted)]">{{ $missionApplications->count() }} offers · Budget {{ number_format($mission->budget, 2) }} MAD</div></div><div class="divide-y divide-[var(--line)]">@foreach($missionApplications as $application)<article class="p-5 sm:p-6 {{ $application->status === 'accepted' ? 'bg-emerald-50/50' : '' }}"><div class="flex flex-col gap-5 lg:flex-row lg:items-start"><div class="flex min-w-0 flex-1 gap-3"><span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[var(--ink)] font-bold text-white">{{ strtoupper(substr($application->freelance->name, 0, 1)) }}</span><div><div class="flex flex-wrap items-center gap-2"><h4 class="font-bold text-[var(--ink)]">{{ $application->freelance->name }}</h4><span class="rounded-full px-2 py-1 text-[10px] font-bold uppercase {{ $application->status === 'accepted' ? 'bg-emerald-100 text-emerald-700' : ($application->status === 'rejected' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-700') }}">{{ $application->status }}</span></div><p class="mt-1 text-xs text-[var(--muted)]">{{ $application->freelance->email }} · Freelancer</p></div></div><div class="lg:text-right"><p class="text-2xl font-bold text-[var(--ink)]">{{ number_format($application->proposed_price, 2) }} <span class="text-sm font-semibold text-[var(--muted)]">MAD</span></p><p class="mt-1 text-xs text-[var(--muted)]">Submitted {{ $application->date_submission?->diffForHumans() ?? $application->created_at->diffForHumans() }}</p></div></div><div class="mt-5 grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end"><p class="rounded-2xl bg-slate-50 p-4 text-sm leading-6 text-[var(--muted)]">{{ $application->cover_letter }}</p>@if($application->status === 'pending')<div class="flex flex-wrap gap-2"><form method="POST" action="{{ route('client.applications.accept', $application) }}">@csrf<button class="sl-button-primary">Accept offer</button></form><form method="POST" action="{{ route('client.applications.reject', $application) }}">@csrf<button class="sl-button rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-bold text-red-700">Reject</button></form></div>@elseif($application->status === 'accepted')<a href="{{ route('missions.show', $mission) }}" class="sl-button-secondary">Manage mission →</a>@endif</div></article>@endforeach</div></section>
+                <section class="sl-panel overflow-hidden">
+                    <div class="flex flex-col justify-between gap-3 border-b border-slate-100 bg-slate-50/60 p-5 sm:flex-row sm:items-center sm:px-6">
+                        <div>
+                            <span class="text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+                                {{ $mission->category?->name ?? 'Mission' }}
+                            </span>
+                            <h3 class="mt-0.5 text-lg font-bold text-slate-900">
+                                <a href="{{ route('missions.show', $mission) }}" class="hover:text-blue-600">
+                                    {{ $mission->title }}
+                                </a>
+                            </h3>
+                        </div>
+                        <div class="flex items-center gap-3 text-xs text-slate-500">
+                            <span>Budget: <strong class="text-slate-900">{{ number_format($mission->budget, 2) }} MAD</strong></span>
+                            <span>&bull;</span>
+                            <span class="rounded-full bg-white px-2.5 py-1 font-semibold text-slate-700 border border-slate-200">
+                                {{ $missionApplications->count() }} {{ Str::plural('proposal', $missionApplications->count()) }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="divide-y divide-slate-100">
+                        @foreach($missionApplications as $application)
+                            <article class="p-5 sm:p-6 transition-colors {{ $application->status === 'accepted' ? 'bg-emerald-50/40' : 'bg-white' }}">
+                                <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                                    <div class="flex items-start gap-3.5">
+                                        <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 font-bold text-white text-sm">
+                                            {{ strtoupper(substr($application->freelance->name, 0, 1)) }}
+                                        </span>
+                                        <div>
+                                            <div class="flex items-center gap-2">
+                                                <h4 class="font-bold text-slate-900">{{ $application->freelance->name }}</h4>
+                                                <x-status-badge :status="$application->status" size="sm" />
+                                            </div>
+                                            <p class="text-xs text-slate-400 mt-0.5">{{ $application->freelance->email }}</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="sm:text-right">
+                                        <p class="text-xl font-bold text-slate-900">
+                                            {{ number_format($application->proposed_price, 2) }} <span class="text-xs font-semibold text-slate-500">MAD</span>
+                                        </p>
+                                        <p class="text-xs text-slate-400 mt-0.5">
+                                            Submitted {{ $application->date_submission?->diffForHumans() ?? $application->created_at->diffForHumans() }}
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4 rounded-xl bg-slate-50 p-4 text-sm leading-relaxed text-slate-700 border border-slate-100">
+                                    {{ $application->cover_letter }}
+                                </div>
+
+                                <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                                    @if($application->status === 'pending')
+                                        <div class="flex items-center gap-2">
+                                            <form method="POST" action="{{ route('client.applications.accept', $application) }}" onsubmit="return confirm('Accepting this proposal will set the mission in progress and notify the freelancer. Continue?');">
+                                                @csrf
+                                                <button type="submit" class="sl-button-primary px-4 py-2 text-xs">
+                                                    <x-icon name="check" class="w-3.5 h-3.5" />
+                                                    <span>Accept Proposal</span>
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ route('client.applications.reject', $application) }}">
+                                                @csrf
+                                                <button type="submit" class="sl-button-danger px-3.5 py-2 text-xs">
+                                                    <span>Decline</span>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @elseif($application->status === 'accepted')
+                                        <div class="flex items-center gap-2 text-xs font-semibold text-emerald-700">
+                                            <x-icon name="check-circle" class="w-4 h-4 text-emerald-600" />
+                                            <span>Accepted candidate &bull; Mission is currently in progress</span>
+                                        </div>
+                                        <a href="{{ route('missions.show', $mission) }}" class="sl-button-secondary px-3.5 py-1.5 text-xs">
+                                            <span>Manage Mission Details &rarr;</span>
+                                        </a>
+                                    @endif
+                                </div>
+                            </article>
+                        @endforeach
+                    </div>
+                </section>
             @empty
-                <div class="sl-panel p-14 text-center"><span class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-2xl text-[var(--blue)]">↗</span><h3 class="mt-5 text-lg font-bold text-[var(--ink)]">No offers yet</h3><p class="mt-2 text-sm text-[var(--muted)]">Publish a mission and freelancer proposals will appear here.</p><a href="{{ route('missions.create') }}" class="sl-button-primary mt-5">Create a mission</a></div>
+                <div class="sl-panel p-12 text-center">
+                    <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
+                        <x-icon name="users" class="w-6 h-6" />
+                    </div>
+                    <h3 class="mt-4 text-base font-bold text-slate-900">No proposals received yet</h3>
+                    <p class="mt-1 text-xs text-slate-500 max-w-sm mx-auto">
+                        Once freelancers review your published briefs and submit their offers, they will be organized here by mission.
+                    </p>
+                    <a href="{{ route('missions.create') }}" class="sl-button-primary mt-5">
+                        <x-icon name="plus" class="w-4 h-4" />
+                        <span>Create a Mission</span>
+                    </a>
+                </div>
             @endforelse
         </div>
     </div>
